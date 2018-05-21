@@ -1,15 +1,22 @@
+import Submissions
 import Vapor
 
 /// Register your application's routes here.
 public func routes(_ router: Router) throws {
-    // Basic "Hello, world!" example
-    router.get("hello") { req in
-        return "Hello, world!"
-    }
 
-    // Example of configuring a controller
+    let api = router.grouped("api")
+    let captureValidationErrors = api.grouped(SubmissionValidationErrorMiddleware.self)
+
     let todoController = TodoController()
-    router.get("todos", use: todoController.index)
-    router.post("todos", use: todoController.create)
-    router.delete("todos", Todo.parameter, use: todoController.delete)
+    api.get("todos", use: todoController.all)
+    api.get("todos", Todo.parameter, use: todoController.single)
+
+    captureValidationErrors.post("todos", use: todoController.create)
+    captureValidationErrors.patch("todos", Todo.parameter, use: todoController.update)
+    api.delete("todos", Todo.parameter, use: todoController.delete)
+
+    // MARK: Views
+    router.get("todos", use: todoController.renderAll)
+    router.get("todos/create", use: todoController.renderCreate)
+    router.get("todos", Todo.parameter, "edit", use: todoController.renderEdit)
 }

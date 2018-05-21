@@ -1,0 +1,9 @@
+#set("body") {
+    <ul>
+    #for(todo in todos) {
+        <li>#(todo.title)</li>
+    }
+    </ul>
+}
+
+#embed("base")
