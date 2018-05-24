@@ -1,5 +1,5 @@
 #set("body") {
-    <form>
+    <form method="post">
     #textgroup("title")
     <button type="submit">Submit</button>
     </form>

@@ -14,6 +14,15 @@ public protocol SubmissionType: Decodable {
     init(_ submittable: Submittable)
 }
 
+extension SubmissionType {
+    public func validate(
+        inContext context: ValidationContext,
+        on worker: Worker
+    ) throws -> Future<ValidationResult> {
+        return try makeFields().validate(inContext: context, on: worker)
+    }
+}
+
 public protocol SubmittableType: Decodable {
     associatedtype Submission: SubmissionType where Submission.Submittable == Self
     associatedtype Create: Decodable
@@ -25,4 +34,14 @@ public protocol SubmittableType: Decodable {
 public enum ValidationContext {
     case create
     case update
+}
+
+extension Future where T: SubmissionType {
+    public func validate(inContext context: ValidationContext, on worker: Worker) -> Future<T> {
+        return flatMap { submission in
+            try submission
+                .validate(inContext: context, on: worker)
+                .transform(to: submission)
+        }
+    }
 }

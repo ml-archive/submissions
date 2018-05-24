@@ -1,7 +1,7 @@
 #set("body") {
     <ul>
     #for(todo in todos) {
-        <li>#(todo.title)</li>
+        <li><a href="/todos/#(todo.id)/edit">#(todo.title)</a></li>
     }
     </ul>
 }

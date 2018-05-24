@@ -27,52 +27,60 @@ final class FrontendTodoController {
 
     func create(req: Request) throws -> Future<Response> {
         return try req.content.decode(Todo.Submission.self)
-            .flatMap(to: Response.self) { submission in
-                switch try submission.makeFields().validate(inContext: .create) {
-                case .success:
-                    return try req
-                        .content.decode(Todo.Create.self)
-                        .map(Todo.init)
-                        .flatMap { todo in
-                            todo.save(on: req)
-                        }
-                        .transform(to: req.redirect(to: "todos"))
-                // TODO: add flash
-                case .failure(let error):
-                    try req.populateFields(
-                        with: submission.makeFields(),
-                        andErrors: error.validationErrors
-                    )
-                    return try req
-                        .view().render("Todo/edit")
-                        .flatMap { view in
-                            view.encode(status: .unprocessableEntity, for: req) // TODO: is this correct?
+            .flatMap { submission in
+                try submission
+                    .validate(inContext: .create, on: req)
+                    .flatMap { _ in
+                        try req.content.decode(Todo.Create.self)
                     }
+                    .map(Todo.init)
+                    .save(on: req)
+                    .transform(to: req.redirect(to: "/todos"))
+                    .catchFlatMap { error in
+                        guard let validationError = error as? SubmissionValidationError else {
+                            throw error
+                        }
+                        try req.populateFields(
+                            with: submission.makeFields(),
+                            andErrors: validationError.validationErrors
+                        )
+                        // TODO: add flash
+                        return try req
+                            .view().render("Todo/edit")
+                            .flatMap { view in
+                                view.encode(status: .unprocessableEntity, for: req) // TODO: is this correct?
+                        }
                 }
             }
     }
 
     func update(req: Request) throws -> Future<Response> {
         return try req.parameters.next(Todo.self)
-            .flatMap(to: Response.self) { todo in
+            .flatMap { todo in
                 try req.content.decode(Todo.Submission.self)
-                    .flatMap(to: Response.self) { submission in
-                        switch try submission.makeFields().validate(inContext: .create) {
-                        case .success:
-                            todo.update(submission)
-                            return todo.save(on: req)
-                                .transform(to: req.redirect(to: "todos"))
-                        // TODO: add flash
-                        case .failure(let error):
-                            try req.populateFields(
-                                with: submission.makeFields(),
-                                andErrors: error.validationErrors
-                            )
-                            return try req
-                                .view().render("Todo/edit")
-                                .flatMap { view in
-                                    view.encode(status: .unprocessableEntity, for: req) // TODO: is this correct?
+                    .flatMap { submission in
+                        try submission
+                            .validate(inContext: .update, on: req)
+                            .map(to: Todo.self) { _ in
+                                todo.update(submission)
+                                return todo
                             }
+                            .save(on: req)
+                            .transform(to: req.redirect(to: "/todos"))
+                            .catchFlatMap { error in
+                                guard let validationError = error as? SubmissionValidationError else {
+                                    throw error
+                                }
+                                try req.populateFields(
+                                    with: submission.makeFields(),
+                                    andErrors: validationError.validationErrors
+                                )
+                                // TODO: add flash
+                                return try req
+                                    .view().render("Todo/edit")
+                                    .flatMap { view in
+                                        view.encode(status: .unprocessableEntity, for: req) // TODO: is this correct?
+                                }
                         }
                     }
             }

@@ -1,23 +1,30 @@
 import Validation
 
 public protocol ValidationContextValidatable {
-    func validate(inContext: ValidationContext) throws -> [ValidationError]
+    func validate(
+        inContext: ValidationContext,
+        on worker: Worker
+    ) throws -> Future<[ValidationError]>
 }
 
 extension Dictionary where Key == String, Value: ValidationContextValidatable {
-    public func validate(inContext context: ValidationContext) throws -> ValidationResult {
-        let r = try Dictionary<String, [ValidationError]>(
-            uniqueKeysWithValues: compactMap { key, value in
-                let errors = try value.validate(inContext: context)
-                guard !errors.isEmpty else {
-                    return nil
-                }
-                return (key, errors)
+    public func validate(
+        inContext context: ValidationContext,
+        on worker: Worker
+    ) throws -> Future<ValidationResult> {
+        return try compactMap { key, value in
+            try value.validate(inContext: context, on: worker).map { errors in
+                (key, errors)
             }
-        )
-        if let error = SubmissionValidationError(validationErrors: r) {
-            return .failure(error)
-        }
-        return .success
+            }.flatten(on: worker)
+            .map {
+                if let error = SubmissionValidationError(
+                    validationErrors: .init(uniqueKeysWithValues: $0)
+                ) {
+                    return .failure(error)
+                } else {
+                    return .success
+                }
+            }
     }
 }

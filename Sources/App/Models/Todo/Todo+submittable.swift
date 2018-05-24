@@ -31,6 +31,6 @@ extension Todo.Submission: SubmissionType {
     }
 
     func makeFields() -> [String: Field] {
-        return ["title": Field(value: title, validators: [.count(5...)])]
+        return ["title": Field(label: "Title", value: title, validators: [.count(5...)])]
     }
 }
