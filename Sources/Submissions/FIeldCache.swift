@@ -1,7 +1,7 @@
 import Service
 
 public final class FieldCache: Service {
-    private var fields: [String: FieldType] = [:]
+    private var fields: [String: Field] = [:]
     private var errors: [String: [String]] = [:]
     public subscript(errorFor key: String) -> [String] {
         get {
@@ -12,7 +12,7 @@ public final class FieldCache: Service {
         }
     }
 
-    public subscript(valueFor key: String) -> FieldType? {
+    public subscript(valueFor key: String) -> Field? {
         get {
             return fields[key]
         }
@@ -30,22 +30,16 @@ extension Request {
         return try make()
     }
 
-    public func populateFields<S: Submittable>(from submittable: S.Type) throws {
+    public func populateFields(
+        with fields: [String: Field],
+        andErrors errors: [String: [ValidationError]] = [:]
+    ) throws {
         let fieldCache = try self.fieldCache()
-        S.Fields().fields.forEach {
+        fields.forEach {
             fieldCache[valueFor: $0.key] = $0.value
         }
-    }
-
-    public func populateFields<S: Submittable>(from submittable: S) throws {
-        let fieldCache = try self.fieldCache()
-        submittable.makeFields().fields.forEach {
-            fieldCache[valueFor: $0.key] = $0.value
+        errors.forEach {
+            fieldCache[errorFor: $0.key] = $0.value.map { $0.reason }
         }
     }
-
-
-//    func setField(_ field: String, to value: FieldType?) throws {
-//        try fieldCache()[valueFor: field] = value
-//    }
 }

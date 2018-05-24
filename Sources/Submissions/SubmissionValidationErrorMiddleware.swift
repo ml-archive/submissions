@@ -33,7 +33,7 @@ public final class SubmissionValidationErrorMiddleware: Service {
         log.report(error: error, verbose: !environment.isRelease)
 
         let validationErrors = error
-            .failedValidations
+            .validationErrors
             .mapValues { validationErrors in
                 validationErrors.map { $0.reason }
         }

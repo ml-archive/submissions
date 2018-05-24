@@ -1,5 +1,8 @@
 #set("body") {
-    #textgroup("title")    
+    <form>
+    #textgroup("title")
+    <button type="submit">Submit</button>
+    </form>
 }
 
 #embed("base")

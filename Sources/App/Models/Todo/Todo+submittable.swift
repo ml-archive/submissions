@@ -1,57 +1,36 @@
 import Submissions
 import Validation
 
-extension Todo: Submittable {
-    struct Fields: FieldsType {
-        let titleField: Field<String>
-
-        var fields: [String: FieldType] {
-            return ["title": titleField]
-        }
-
-        init() {
-            self.init(title: nil)
-        }
-
-        init(_ submission: Update) {
-            self.init(title: submission.title)
-        }
-
-        init(title: String?) {
-            titleField = Field(
-                label: "Title",
-                value: title,
-                validator: Validator.count(5...)
-            )
-        }
-    }
-
-    struct Create: FieldsInitializable {
+extension Todo: SubmittableType {
+    struct Create: Decodable {
         let title: String
-        init(_ fields: Fields) {
-            // TODO: make some nice convenience for throwing error when values are nil
-            title = fields.titleField.value!
-        }
     }
 
-    struct Update: Decodable, FieldsInitializable {
+    struct Submission: Decodable {
         let title: String?
-        init(_ fields: Fields) {
-            title = fields.titleField.value
-        }
     }
 
     convenience init(_ create: Create) {
         self.init(id: nil, title: create.title)
     }
 
-    func update(_ update: Update) {
-        if let title = update.title {
+    func update(_ submission: Submission) {
+        if let title = submission.title {
             self.title = title
         }
     }
+}
 
-    func makeFields() -> Fields {
-        return Fields(title: title)
+import Vapor
+
+extension Todo.Submission: SubmissionType {
+    static let empty = Todo.Submission(title: nil)
+
+    init(_ todo: Todo) {
+        title = todo.title
+    }
+
+    func makeFields() -> [String: Field] {
+        return ["title": Field(value: title, validators: [.count(5...)])]
     }
 }
