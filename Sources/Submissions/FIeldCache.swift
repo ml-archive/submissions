@@ -1,4 +1,5 @@
 import Service
+import Vapor
 
 public final class FieldCache: Service {
     private var fields: [String: Field] = [:]
@@ -20,12 +21,9 @@ public final class FieldCache: Service {
             fields[key] = newValue
         }
     }
-
 }
 
-import Vapor
-
-extension Request {
+extension Container {
     public func fieldCache() throws -> FieldCache {
         return try make()
     }

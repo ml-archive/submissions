@@ -6,15 +6,9 @@ public final class SubmissionsProvider: Provider {
     
     public func register(_ services: inout Services) throws {
         services.register { _ in FieldCache() }
-        services.register { container -> SubmissionValidationErrorMiddleware in
-            return try SubmissionValidationErrorMiddleware(
-                environment: container.environment,
-                log: container.make()
-            )
-        }
     }
 
-    public func didBoot(_ container: Container) throws -> EventLoopFuture<Void> {
+    public func didBoot(_ container: Container) throws -> Future<Void> {
         return .done(on: container)
     }
 }

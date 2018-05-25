@@ -2,15 +2,6 @@
   "object": {
     "pins": [
       {
-        "package": "Auth",
-        "repositoryURL": "https://github.com/vapor/auth.git",
-        "state": {
-          "branch": null,
-          "revision": "b84242ee3d450516b050f7a64fc0b81604f56077",
-          "version": "2.0.0-rc.4.1"
-        }
-      },
-      {
         "package": "Console",
         "repositoryURL": "https://github.com/vapor/console.git",
         "state": {
@@ -24,8 +15,8 @@
         "repositoryURL": "https://github.com/vapor/core.git",
         "state": {
           "branch": null,
-          "revision": "a909eccc41941faac6fb9e511cdb9a5cb30a05de",
-          "version": "3.1.7"
+          "revision": "3b72f2cc3fb21d505fbe97215418951a8e4a2871",
+          "version": "3.2.1"
         }
       },
       {
@@ -47,48 +38,12 @@
         }
       },
       {
-        "package": "Flash",
-        "repositoryURL": "https://github.com/nodes-vapor/flash",
-        "state": {
-          "branch": null,
-          "revision": "71f1daf5ebc25e2bb1b04b7ba004fce4910423b3",
-          "version": "2.0.0-beta.2"
-        }
-      },
-      {
-        "package": "Fluent",
-        "repositoryURL": "https://github.com/vapor/fluent.git",
-        "state": {
-          "branch": null,
-          "revision": "8f22ef2dfeb278179a2d6e91769a5c1ceccf31ef",
-          "version": "3.0.0-rc.2.4.1"
-        }
-      },
-      {
-        "package": "FluentSQLite",
-        "repositoryURL": "https://github.com/vapor/fluent-sqlite.git",
-        "state": {
-          "branch": null,
-          "revision": "cda27c5f946972a5e14f4e29be81b0572fa77123",
-          "version": "3.0.0-rc.2.2"
-        }
-      },
-      {
         "package": "HTTP",
         "repositoryURL": "https://github.com/vapor/http.git",
         "state": {
           "branch": null,
           "revision": "5e766f72d81ef5fe8805d704efdffd17e4906134",
           "version": "3.0.6"
-        }
-      },
-      {
-        "package": "JWT",
-        "repositoryURL": "https://github.com/vapor/jwt.git",
-        "state": {
-          "branch": null,
-          "revision": "6acca0abfe335ce7585d678cd721e8a0e3c7a053",
-          "version": "3.0.0-rc.2.1.1"
         }
       },
       {
@@ -128,39 +83,12 @@
         }
       },
       {
-        "package": "SQL",
-        "repositoryURL": "https://github.com/vapor/sql.git",
-        "state": {
-          "branch": null,
-          "revision": "1bb94271d8645b6d6983721080ad642aa35d749c",
-          "version": "1.0.0"
-        }
-      },
-      {
-        "package": "SQLite",
-        "repositoryURL": "https://github.com/vapor/sqlite.git",
-        "state": {
-          "branch": null,
-          "revision": "3bbf797f2340ce7becbba54fda173c50f3e8c68d",
-          "version": "3.0.0-rc.2.4"
-        }
-      },
-      {
-        "package": "Sugar",
-        "repositoryURL": "https://github.com/nodes-vapor/sugar",
-        "state": {
-          "branch": "vapor-3",
-          "revision": "052caf1b294a39bcc623cfadf3c152a78f9c05b4",
-          "version": null
-        }
-      },
-      {
         "package": "swift-nio",
         "repositoryURL": "https://github.com/apple/swift-nio.git",
         "state": {
           "branch": null,
-          "revision": "80363d9d8c1c572d228350ea87132bfa49c8ca03",
-          "version": "1.7.1"
+          "revision": "77dc77b9b5cdddfb3c385c5ee6cb74153d284967",
+          "version": "1.7.2"
         }
       },
       {
@@ -215,6 +143,15 @@
           "branch": null,
           "revision": "ab6c5a352d97c8687b91ed4963aef8e7cfe0795b",
           "version": "2.0.0"
+        }
+      },
+      {
+        "package": "Vapor",
+        "repositoryURL": "https://github.com/vapor/vapor.git",
+        "state": {
+          "branch": null,
+          "revision": "39b4d3fa36e58c6f7415c9da6c65a703bec34cea",
+          "version": "3.0.3"
         }
       },
       {

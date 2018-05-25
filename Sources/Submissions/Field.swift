@@ -10,7 +10,7 @@ public struct Field: ValidationContextValidatable {
         value: T?,
         validators: [Validator<T>] = [],
         validate: @escaping (T?, ValidationContext, Worker) -> Future<[ValidationError]> = { _, _, worker in
-            .transform(to: [], on: worker)
+            worker.future([])
         },
         isOptional: Bool = false,
         errorOnNil: ValidationError = BasicValidationError("Value may not be empty")
