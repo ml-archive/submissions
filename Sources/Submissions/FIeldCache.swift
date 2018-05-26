@@ -28,6 +28,10 @@ extension Container {
         return try make()
     }
 
+    public func populateFields<T: SubmittableType>(_ submittable: T.Type) throws {
+        try populateFields(with: T.Submission.empty.makeFields())
+    }
+
     public func populateFields(
         with fields: [String: Field],
         andErrors errors: [String: [ValidationError]] = [:]

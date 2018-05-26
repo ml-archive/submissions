@@ -1,3 +1,4 @@
+import Sugar
 import Vapor
 
 public protocol SubmittableType: Decodable {
@@ -28,6 +29,12 @@ extension Future where T: SubmittableType {
                     mutableInstance.update(submission)
                     return mutableInstance
             }
+        }
+    }
+
+    public func populateFields(on req: Request) -> Future<T> {
+        return self.try { submittable in
+            try req.populateFields(with: T.Submission(submittable).makeFields())
         }
     }
 }
