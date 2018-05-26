@@ -17,10 +17,10 @@ extension Either: ResponseEncodable where L: ResponseEncodable, R: ResponseEncod
 }
 
 extension Future {
-    public func promoteSubmissionValidationErrors() -> Future<Either<T, SubmissionValidationError>> {
+    public func promoteErrors<E: Error>(ofType type: E.Type = E.self) -> Future<Either<T, E>> {
         return map(Either.left)
             .catchMap {
-                guard let error = $0 as? SubmissionValidationError else {
+                guard let error = $0 as? E else {
                     throw $0
                 }
                 return .right(error)
