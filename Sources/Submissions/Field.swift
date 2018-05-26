@@ -18,7 +18,7 @@ public struct Field: ValidationContextValidatable {
         self.label = label
         self.value = value?.description
         _validate = { context, worker in
-            return validate(value, context, worker)
+            validate(value, context, worker)
                 .map { validationErrors in
                     switch (value, context, isOptional) {
                     case (.none, .create, false):
