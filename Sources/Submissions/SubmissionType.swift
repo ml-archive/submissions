@@ -21,13 +21,16 @@ extension SubmissionType {
                     .validate(inContext: context, on: container)
                     .map { errors in
                         (key, errors)
-                }
+                    }
             }
             .flatten(on: container)
-            .map {
+            .map { errors in
+                errors.filter { _, value in !value.isEmpty }
+            }
+            .map { errors in
                 if let error = SubmissionValidationError(
                     fields: fields,
-                    validationErrors: .init(uniqueKeysWithValues: $0)
+                    validationErrors: .init(uniqueKeysWithValues: errors)
                 ) {
                     try container.populateFields(
                         with: error.fields,
