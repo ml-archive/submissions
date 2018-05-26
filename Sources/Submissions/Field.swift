@@ -18,24 +18,26 @@ public struct Field: ValidationContextValidatable {
         self.label = label
         self.value = value?.description
         _validate = { context, worker in
-            validate(value, context, worker)
-                .map { validationErrors in
-                    switch (value, context, isOptional) {
-                    case (.none, .create, false):
-                        return validationErrors + [errorOnNil]
-                    case (.some(let value), _, _):
-                        var errors: [ValidationError] = []
-                        for validator in validators {
-                            do {
-                                try validator.validate(value)
-                            } catch let error as ValidationError {
-                                errors.append(error)
-                            }
-                        }
-                        return validationErrors + errors
-                    default: return validationErrors
+            let validationErrors: [ValidationError]
+
+            switch (value, context, isOptional) {
+            case (.none, .create, false):
+                validationErrors = [errorOnNil]
+            case (.some(let value), _, _):
+                var errors: [ValidationError] = []
+                for validator in validators {
+                    do {
+                        try validator.validate(value)
+                    } catch let error as ValidationError {
+                        errors.append(error)
                     }
                 }
+                validationErrors = errors
+            default:
+                validationErrors = []
+            }
+
+            return validate(value, context, worker).map { validationErrors + $0 }
         }
     }
 
