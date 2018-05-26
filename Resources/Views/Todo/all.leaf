@@ -1,9 +1,0 @@
-#set("body") {
-    <ul>
-    #for(todo in todos) {
-        <li><a href="/todos/#(todo.id)/edit">#(todo.title)</a></li>
-    }
-    </ul>
-}
-
-#embed("base")

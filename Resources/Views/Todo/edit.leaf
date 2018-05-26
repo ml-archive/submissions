@@ -1,8 +1,0 @@
-#set("body") {
-    <form method="post">
-    #textgroup("title")
-    <button type="submit">Submit</button>
-    </form>
-}
-
-#embed("base")
