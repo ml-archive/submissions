@@ -7,3 +7,27 @@ public protocol SubmittableType: Decodable {
     init(_: Create)
     mutating func update(_: Submission)
 }
+
+extension Future where T: SubmissionType {
+    public func createValid(on req: Request) -> Future<T.Submittable> {
+        return validate(inContext: .create, on: req)
+            .flatMap { _ in
+                try req.content.decode(T.Submittable.Create.self)
+            }
+            .map(T.Submittable.init)
+    }
+}
+
+extension Future where T: SubmittableType {
+    public func updateValid(on req: Request) -> Future<T> {
+        return flatMap(to: T.self) { submittable in
+            try req.content.decode(T.Submission.self)
+                .validate(inContext: .update, on: req)
+                .map { submission in
+                    var mutableInstance = submittable
+                    mutableInstance.update(submission)
+                    return mutableInstance
+            }
+        }
+    }
+}
