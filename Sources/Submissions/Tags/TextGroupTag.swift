@@ -16,7 +16,7 @@ final class TextGroupTag: TagRenderer {
         let html = """
         <div class='form-group\(hasErrors ? " has-error" : "")'>
             \(field?.label.map { "<label class='control-label' for=\(key)>\($0)</label>" } ?? "")
-            <input type='text' name=\(key) value=\(field?.value ?? "") />
+            <input type='text' name=\(key) value=\(field?.value ?? "")>
             \(errors.map { "<span class='help-block'>\($0)</span>" }.joined())
         </div>
         """
