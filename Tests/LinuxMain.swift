@@ -1,7 +1,7 @@
 #if os(Linux)
 
 import XCTest
-@testable import JWTKeychainTests
+@testable import SubmissionsTests
 
 // sourcery:inline:auto:LinuxMain
 
