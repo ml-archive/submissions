@@ -1,4 +1,4 @@
-import App
+import Submissions
 import XCTest
 
 final class SubmissionsTests: XCTestCase {
