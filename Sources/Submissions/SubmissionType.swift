@@ -2,19 +2,17 @@ import Vapor
 
 /// A payload containing fields to use when creating or updating an entity.
 public protocol SubmissionType: Decodable, Reflectable {
-    associatedtype Submittable: SubmittableType
-
-    /// An empty version of this type. Used for displaying labels when creating a new entity.
-    static var empty: Self { get }
+    associatedtype S: Submittable
 
     /// The field entries (fields with associated keys).
     func fieldEntries() throws -> [FieldEntry]
 
-    /// Create a submission value from a `Submittable`. Used when editing an entity to populate a
-    /// form with its values
+    /// Create a submission value based on an optional `Submittable` value.
+    /// Supply a non-nil value when editing an entity to populate a form with its values
+    /// Supply `nil` when creating a new entity so only only the fields' labels will be used.
     ///
-    /// - Parameter submittable: The value to read the properties from.
-    init(_ submittable: Submittable)
+    /// - Parameter submittable: The value to read the properties from, or nil
+    init(_ submittable: S?)
 }
 
 extension SubmissionType {

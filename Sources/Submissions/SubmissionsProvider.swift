@@ -4,7 +4,7 @@ import Vapor
 /// A provider that registers a FieldCache.
 public final class SubmissionsProvider: Provider {
 
-    /// See `Provider`
+    /// Create a new `SubmissionsProvider`.
     public init() {}
     
     /// See `Provider`

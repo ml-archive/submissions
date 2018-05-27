@@ -48,8 +48,8 @@ extension Container {
     ///
     /// - Parameter submittable: The type for which to create the fields.
     /// - Throws: When no `FieldCache` has been registered with this container.
-    public func populateFields<T: SubmittableType>(_ submittable: T.Type) throws {
-        try populateFields(with: T.Submission.empty.makeFields())
+    public func populateFields<T: Submittable>(_ submittable: T.Type) throws {
+        try populateFields(with: T.Submission(nil).makeFields())
     }
 
     /// Sets any fields and errors on the field cache of this `Container`.

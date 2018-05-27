@@ -1,8 +1,8 @@
 import Sugar
 import Vapor
 
-public protocol SubmittableType: Decodable {
-    associatedtype Submission: SubmissionType where Submission.Submittable == Self
+public protocol Submittable: Decodable {
+    associatedtype Submission: SubmissionType where Submission.S == Self
     associatedtype Create: Decodable
 
     /// Create a new instance from a value of the associated `Create` type.
@@ -22,16 +22,16 @@ extension Future where T: SubmissionType {
     ///
     /// - Parameter req: The current `Request`.
     /// - Returns: A `Future` of the submittable value created from the submission payload.
-    public func createValid(on req: Request) -> Future<T.Submittable> {
+    public func createValid(on req: Request) -> Future<T.S> {
         return validate(inContext: .create, on: req)
             .flatMap { _ in
-                try req.content.decode(T.Submittable.Create.self)
+                try req.content.decode(T.S.Create.self)
             }
-            .map(T.Submittable.init)
+            .map(T.S.init)
     }
 }
 
-extension Future where T: SubmittableType {
+extension Future where T: Submittable {
 
     /// Updated a submittable value based on the submission payload after it is validated.
     ///
