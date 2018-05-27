@@ -1,6 +1,13 @@
 import Leaf
 
+/// A tag that renders an form-group with a text input. Includes a label and errors if supplied.
 final class TextGroupTag: TagRenderer {
+
+    /// See `TagRenderer`
+    ///
+    /// - Parameter tag: The tag context. Must contain 1 string parameter with the key that
+    ///   corresponds to a value and possible errors in the field cache.
+    /// - Throws: Any error fetching the field cache or when the parameters are invalid.
     func render(tag: TagContext) throws -> Future<TemplateData> {
         try tag.requireParameterCount(1)
         let fieldCache = try tag.container.fieldCache()
@@ -10,7 +17,7 @@ final class TextGroupTag: TagRenderer {
         }
 
         let field = fieldCache[valueFor: key]
-        let errors = fieldCache[errorFor: key]
+        let errors = fieldCache[errorsFor: key]
         let hasErrors = errors.count > 0
 
         let html = """

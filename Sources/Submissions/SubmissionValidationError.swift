@@ -1,9 +1,20 @@
 import Validation
 import Vapor
 
+/// An error containing fields and failed validations of a submission payload.
 public struct SubmissionValidationError: Error {
+
+    /// All fields of the submission payload.
     public let fields: [String: Field]
+
+    /// The underlying validation errors.
     public let validationErrors: [String: [ValidationError]]
+
+    /// Create a new `SubmissionValidationError`.when any validation errors exist.
+    ///
+    /// - Parameters:
+    ///   - fields: All fields of the submission payload.
+    ///   - validationErrors: The underlying validation errors.
     init?(fields: [String: Field], validationErrors: [String: [ValidationError]]) {
         self.fields = fields
         if validationErrors.isEmpty {
@@ -15,6 +26,7 @@ public struct SubmissionValidationError: Error {
 }
 
 private struct ErrorResponse: Encodable {
+    
     /// Always set `error` to `true` in response.
     let error = true
 
@@ -26,6 +38,8 @@ private struct ErrorResponse: Encodable {
 }
 
 extension SubmissionValidationError: ResponseEncodable {
+
+    /// See `ResponseEncodable`
     public func encode(for req: Request) throws -> Future<Response> {
         let validationErrors = self
             .validationErrors

@@ -1,19 +1,26 @@
 import Validation
 
-public struct Field: ValidationContextValidatable {
+/// Represents a property that can be rendered in an html form and validated on submission.
+public struct Field {
+    
+    /// A label describing this field. Used by Tags to render alongside an input field.
     public let label: String?
+
+    /// The value for this field represented as a `String`.
     public let value: String?
+
     private let _validate: (ValidationContext, Worker) throws -> Future<[ValidationError]>
 
-    public init<T: LosslessStringConvertible>(
+    /// A closure that can perform async validation of a value in a validation context on a worker.
+    public typealias Validate<T> = (T?, ValidationContext, Worker) -> Future<[ValidationError]>
+
+    init<T: CustomStringConvertible>(
         label: String? = nil,
         value: T?,
         validators: [Validator<T>] = [],
-        validate: @escaping (T?, ValidationContext, Worker) -> Future<[ValidationError]> = { _, _, worker in
-            worker.future([])
-        },
+        validate: @escaping Validate<T>,
         isOptional: Bool = false,
-        errorOnNil: ValidationError = BasicValidationError("Value may not be empty")
+        errorOnNil: ValidationError
     ) {
         self.label = label
         self.value = value?.description
@@ -41,6 +48,13 @@ public struct Field: ValidationContextValidatable {
         }
     }
 
+    /// Validate the `Field`'s value using provided validators.
+    ///
+    /// - Parameters:
+    ///   - context: The context to respect when validating.
+    ///   - worker: A `Worker` to perform the async validation on.
+    /// - Returns: An array of `ValidationError`s in the `Future`.
+    /// - Throws: Any non-validation related error
     public func validate(
         inContext context: ValidationContext,
         on worker: Worker
