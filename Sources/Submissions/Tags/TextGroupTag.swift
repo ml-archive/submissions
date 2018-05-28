@@ -1,6 +1,7 @@
 import Leaf
 
-/// A tag that renders an form-group with a text input. Includes a label and errors if supplied.
+/// A tag that renders an form-group with a text input as Bootstrap 4 HTML.
+/// Includes a label and errors if supplied.
 final class TextGroupTag: TagRenderer {
 
     /// See `TagRenderer`
@@ -20,11 +21,14 @@ final class TextGroupTag: TagRenderer {
         let errors = fieldCache[errorsFor: key]
         let hasErrors = errors.count > 0
 
+        let errorBlock = hasErrors ?
+            "<div class='invalid-feedback'>\(errors.map { "<div>\($0)</div>" }.joined())</div>" : ""
+
         let html = """
-        <div class='form-group\(hasErrors ? " has-error" : "")'>
+        <div>
             \(field?.label.map { "<label class='control-label' for=\(key)>\($0)</label>" } ?? "")
-            <input type='text' name=\(key) value=\(field?.value ?? "")>
-            \(errors.map { "<span class='help-block'>\($0)</span>" }.joined())
+            <input type='text' class='form-control\(hasErrors ? " is-invalid" : "")' name=\(key) value=\(field?.value ?? "")>
+            \(errorBlock)
         </div>
         """
 
