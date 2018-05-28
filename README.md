@@ -9,9 +9,27 @@
 
 # Installation
 
-Update your `Package.swift` file.
+## Package.swift
+
+Add `Submissions` to the Package dependencies:
 ```swift
-.package(url: "https://github.com/nodes-vapor/submissions.git", from: "1.0.0-beta")
+dependencies: [
+    ...,
+    .package(url: "https://github.com/nodes-vapor/submissions.git", from: "1.0.0-beta")
+]
+```
+
+as well as to your target (e.g. "App"):
+
+```swift
+targets: [
+    ...
+    .target(
+        name: "App",
+        dependencies: [... "Submissions" ...]
+    ),
+    ...
+]
 ```
 
 ## Introduction
@@ -19,6 +37,16 @@ Update your `Package.swift` file.
 Submissions was written to minimize the amount of boilerplate needed to write the common tasks of rendering forms and processing and validating data from POST and PATCH requests. Submissions makes it easy to present detailed validation errors for web users as well as API consumers.
 
 ## Getting started 🚀
+
+## Adding the Provider
+
+"Submissions" comes with a light-weight provider that we'll need to register in the `configure` function in our `configure.swift` file:
+
+```swift
+try services.register(SubmissionsProvider())
+```
+
+This makes sure that fields and errors can be stored on the request using a `FieldCache` service.
 
 ### Making a Submittable model
 
@@ -183,16 +211,17 @@ When building your HTML form using Leaf you can add inputs for your model's fiel
 #textgroup("title")
 ```
 
-This will render a form group with an input and any errors stored in the field cache for the "title" field. This produces the following HTML (in case of a new Todo instance without a value, and no errors):
+This will render a form group with an input and any errors stored in the field cache for the "title" field. This produces the following Bootstrap 4 style HTML (with in this case a validation error):
 
 ```html
-<div class="form-group">
+<div>
     <label class="control-label" for="title">Title</label>
-    <input type="text" name="title" value="">
+    <input type="text" class="form-control is-invalid" name="title" value="four">
+    <div class="invalid-feedback"><div>data is not larger than 5</div></div>
 </div>
 ```
 
-> Note: Currently only textgroup is supported
+> Note: Currently only "textgroup" is supported
 
 Before we can use the tag we have to register it in `configure.swift`. We'll use a helper function from the [`Sugar`](https://github.com/nodes-vapor/sugar/tree/vapor-3) package. 
 
