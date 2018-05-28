@@ -116,15 +116,10 @@ extension SubmissionType {
                 errors.filter { _, value in !value.isEmpty }
             }
             .map { errors in
-                if let error = SubmissionValidationError(
-                    fields: fields,
-                    validationErrors: .init(uniqueKeysWithValues: errors)
-                ) {
-                    try container.populateFields(
-                        with: error.fields,
-                        andErrors: error.validationErrors
-                    )
-                    throw error
+                let validationErrors = [String: [ValidationError]](uniqueKeysWithValues: errors)
+                if !validationErrors.isEmpty {
+                    try container.populateFields(with: fields, andErrors: validationErrors)
+                    throw SubmissionValidationError()
                 }
                 return self
             }

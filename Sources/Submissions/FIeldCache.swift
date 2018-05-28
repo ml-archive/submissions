@@ -3,8 +3,8 @@ import Vapor
 
 /// A `FieldCache` contains the data used by `Tag`s to produce the fields in html forms.
 public final class FieldCache: Service {
-    private var fields: [String: Field] = [:]
-    private var errors: [String: [String]] = [:]
+    var fields: [String: Field] = [:]
+    var errors: [String: [String]] = [:]
 }
 
 extension FieldCache {
