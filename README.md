@@ -216,7 +216,7 @@ This will render a form group with an input and any errors stored in the field c
 ```html
 <div>
     <label class="control-label" for="title">Title</label>
-    <input type="text" class="form-control is-invalid" name="title" value="four">
+    <input type="text" class="form-control is-invalid" id="title" name="title" value="four">
     <div class="invalid-feedback"><div>data is not larger than 5</div></div>
 </div>
 ```
