@@ -24,15 +24,15 @@ extension SubmissionType {
     ///   - value: The value for this field.
     ///   - validators: The validators to use when validating the value.
     ///   - validate: A closure to perform any additional validation that requires async.
-    ///   - isOptional: Whether or the value is allowed to be `nil`.
+    ///   - isOptional: Whether or not the value is allowed to be `nil`.
     ///   - errorOnNil: The error to be thrown in the `create` context for `nil` values when
-    ///     `isOptional` is `false`.
+    ///     `isRequired` is `true`.
     public func makeFieldEntry<T: CustomStringConvertible>(
         keyPath: KeyPath<Self, T>,
         label: String? = nil,
         validators: [Validator<T>] = [],
         validate: @escaping Field.Validate<T> = { _, _, worker in worker.future([]) },
-        isOptional: Bool = false,
+        isRequired: Bool = true,
         errorOnNil: ValidationError = BasicValidationError.onNil
     ) throws -> FieldEntry {
         return try .init(
@@ -42,7 +42,7 @@ extension SubmissionType {
                 value: self[keyPath: keyPath],
                 validators: validators,
                 validate: validate,
-                isOptional: isOptional,
+                isRequired: isRequired,
                 errorOnNil: errorOnNil
             )
         )
@@ -55,15 +55,15 @@ extension SubmissionType {
     ///   - value: The value for this field.
     ///   - validators: The validators to use when validating the value.
     ///   - validate: A closure to perform any additional validation that requires async.
-    ///   - isOptional: Whether or the value is allowed to be `nil`.
+    ///   - isRequired: Whether or not the value is allowed to be `nil`.
     ///   - errorOnNil: The error to be thrown in the `create` context for `nil` values when
-    ///     `isOptional` is `false`.
+    ///     `isRequired` is `true`.
     public func makeFieldEntry<T: CustomStringConvertible>(
         keyPath: KeyPath<Self, T?>,
         label: String? = nil,
         validators: [Validator<T>] = [],
         validate: @escaping Field.Validate<T> = { _, _, worker in worker.future([]) },
-        isOptional: Bool = false,
+        isRequired: Bool = true,
         errorOnNil: ValidationError = BasicValidationError.onNil
     ) throws -> FieldEntry {
         return try .init(
@@ -73,7 +73,7 @@ extension SubmissionType {
                 value: self[keyPath: keyPath],
                 validators: validators,
                 validate: validate,
-                isOptional: isOptional,
+                isRequired: isRequired,
                 errorOnNil: errorOnNil
             )
         )

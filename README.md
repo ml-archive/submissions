@@ -83,7 +83,7 @@ Next we'll see how we can associate validators (and labels) with our fields.
 extension Todo.Submission {
     func fieldEntries() throws -> [FieldEntry] {
         return try [
-            makeFieldEntry(keyPath: \.title, label: "Title", validators: [.count(5...)], isOptional: false)
+            makeFieldEntry(keyPath: \.title, label: "Title", validators: [.count(5...)], isRequired: true)
         ]
     }
 

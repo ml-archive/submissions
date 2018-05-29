@@ -21,16 +21,15 @@ final class TextGroupTag: TagRenderer {
         let errors = fieldCache[errorsFor: key]
         let hasErrors = errors.count > 0
 
+        let label = field?.label.map { "<label class='control-label' for=\(key)>\($0)</label>" } ?? ""
+        let value = field?.value.map { " value='\($0)'" } ?? ""
+        let required = (field?.isRequired ?? false) ? " required" : ""
+        let inputClass = "class='form-control\(hasErrors ? " is-invalid" : "")'"
+        let input = "<input type='text' \(inputClass) id='\(key)' name='\(key)'\(value)\(required)>"
         let errorBlock = hasErrors ?
             "<div class='invalid-feedback'>\(errors.map { "<div>\($0)</div>" }.joined())</div>" : ""
 
-        let html = """
-        <div>
-            \(field?.label.map { "<label class='control-label' for=\(key)>\($0)</label>" } ?? "")
-            <input type='text' class='form-control\(hasErrors ? " is-invalid" : "")' id=\(key) name=\(key) value=\(field?.value ?? "")>
-            \(errorBlock)
-        </div>
-        """
+        let html = "<div>\(label)\(input)\(errorBlock)</div>"
 
         return tag.future(.string(html))
     }

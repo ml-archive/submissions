@@ -9,6 +9,9 @@ public struct Field {
     /// The value for this field represented as a `String`.
     public let value: String?
 
+    /// Whether or not values are allowed to be nil
+    public let isRequired: Bool
+
     private let _validate: (ValidationContext, Worker) throws -> Future<[ValidationError]>
 
     /// A closure that can perform async validation of a value in a validation context on a worker.
@@ -19,16 +22,17 @@ public struct Field {
         value: T?,
         validators: [Validator<T>] = [],
         validate: @escaping Validate<T>,
-        isOptional: Bool = false,
+        isRequired: Bool = true,
         errorOnNil: ValidationError
     ) {
         self.label = label
         self.value = value?.description
+        self.isRequired = isRequired
         _validate = { context, worker in
             let validationErrors: [ValidationError]
 
-            switch (value, context, isOptional) {
-            case (.none, .create, false):
+            switch (value, context, isRequired) {
+            case (.none, .create, true):
                 validationErrors = [errorOnNil]
             case (.some(let value), _, _):
                 var errors: [ValidationError] = []
