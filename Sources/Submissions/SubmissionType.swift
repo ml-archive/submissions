@@ -31,7 +31,7 @@ extension SubmissionType {
         keyPath: KeyPath<Self, T>,
         label: String? = nil,
         validators: [Validator<T>] = [],
-        validate: @escaping Field.Validate<T> = { _, _, worker in worker.future([]) },
+        asyncValidators: [Field.Validate<T>] = [],
         isRequired: Bool = true,
         errorOnNil: ValidationError = BasicValidationError.onNil
     ) throws -> FieldEntry {
@@ -41,7 +41,7 @@ extension SubmissionType {
                 label: label,
                 value: self[keyPath: keyPath],
                 validators: validators,
-                validate: validate,
+                asyncValidators: asyncValidators,
                 isRequired: isRequired,
                 errorOnNil: errorOnNil
             )
@@ -62,7 +62,7 @@ extension SubmissionType {
         keyPath: KeyPath<Self, T?>,
         label: String? = nil,
         validators: [Validator<T>] = [],
-        validate: @escaping Field.Validate<T> = { _, _, worker in worker.future([]) },
+        asyncValidators: [Field.Validate<T>] = [],
         isRequired: Bool = true,
         errorOnNil: ValidationError = BasicValidationError.onNil
     ) throws -> FieldEntry {
@@ -72,7 +72,7 @@ extension SubmissionType {
                 label: label,
                 value: self[keyPath: keyPath],
                 validators: validators,
-                validate: validate,
+                asyncValidators: asyncValidators,
                 isRequired: isRequired,
                 errorOnNil: errorOnNil
             )
@@ -99,26 +99,26 @@ extension SubmissionType {
     /// - Throws: any non-validation related errors that may occur.
     public func validate(
         inContext context: ValidationContext,
-        on container: Container
+        on req: Request // TODO: Update docs
     ) throws -> Future<Self> {
         let fields = try makeFields()
 
         return try fields
             .compactMap { key, value in
                 try value
-                    .validate(inContext: context, on: container)
+                    .validate(inContext: context, on: req)
                     .map { errors in
                         (key, errors)
                     }
             }
-            .flatten(on: container)
+            .flatten(on: req)
             .map { errors in
                 errors.filter { _, value in !value.isEmpty }
             }
             .map { errors in
                 let validationErrors = [String: [ValidationError]](uniqueKeysWithValues: errors)
                 if !validationErrors.isEmpty {
-                    try container.populateFields(with: fields, andErrors: validationErrors)
+                    try req.populateFields(with: fields, andErrors: validationErrors)
                     throw SubmissionValidationError()
                 }
                 return self
@@ -143,9 +143,9 @@ extension Future where T: SubmissionType {
     ///   - container: The container with the event loop to validate on and the field cache to store
     ///     any validation errors.
     /// - Returns: A `Future` of the `SubmissionType` value.
-    public func validate(inContext context: ValidationContext, on container: Container) -> Future<T> {
+    public func validate(inContext context: ValidationContext, on request: Request) -> Future<T> { // TODO: Update docs
         return flatMap { submission in
-            try submission.validate(inContext: context, on: container)
+            try submission.validate(inContext: context, on: request)
         }
     }
 }

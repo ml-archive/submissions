@@ -34,14 +34,14 @@ extension FieldCache {
     }
 }
 
-extension Container {
+extension Request {
 
     /// Creates or retreives a field cache object.
     ///
     /// - Returns: The `FieldCache`
     /// - Throws: When no `FieldCache` has been registered with this container.
     public func fieldCache() throws -> FieldCache {
-        return try make()
+        return try self.privateContainer.make()
     }
 
     /// Sets any fields on the field cache of this `Container` for an empty `Submission` value.

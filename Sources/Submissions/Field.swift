@@ -1,8 +1,8 @@
 import Validation
+import Vapor
 
 /// Represents a property that can be rendered in an html form and validated on submission.
 public struct Field {
-    
     /// A label describing this field. Used by Tags to render alongside an input field.
     public let label: String?
 
@@ -12,23 +12,24 @@ public struct Field {
     /// Whether or not values are allowed to be nil
     public let isRequired: Bool
 
-    private let _validate: (ValidationContext, Worker) throws -> Future<[ValidationError]>
+    private let _validate: (ValidationContext, Request) throws -> Future<[ValidationError]>
 
     /// A closure that can perform async validation of a value in a validation context on a worker.
-    public typealias Validate<T> = (T?, ValidationContext, Worker) -> Future<[ValidationError]>
+    public typealias Validate<T> = (T?, ValidationContext, Request) throws -> Future<[ValidationError]>
 
     init<T: CustomStringConvertible>(
         label: String? = nil,
         value: T?,
         validators: [Validator<T>] = [],
-        validate: @escaping Validate<T>,
+        asyncValidators: [Validate<T>],
         isRequired: Bool = true,
+        allowValues: [String] = [""],
         errorOnNil: ValidationError
     ) {
         self.label = label
         self.value = value?.description
         self.isRequired = isRequired
-        _validate = { context, worker in
+        _validate = { context, req in
             let validationErrors: [ValidationError]
 
             switch (value, context, isRequired) {
@@ -36,6 +37,11 @@ public struct Field {
                 validationErrors = [errorOnNil]
             case (.some(let value), _, _):
                 var errors: [ValidationError] = []
+
+                guard !allowValues.contains(value.description) else {
+                    fallthrough
+                }
+
                 for validator in validators {
                     do {
                         try validator.validate(value)
@@ -48,7 +54,15 @@ public struct Field {
                 validationErrors = []
             }
 
-            return validate(value, context, worker).map { validationErrors + $0 }
+            return try asyncValidators
+                .map { validator in
+                    try validator(value, context, req)
+                }
+                .flatten(on: req)
+                .map(to: [ValidationError].self) { errors in
+                    return Array(errors.joined())
+                }
+                .map { validationErrors + $0 }
         }
     }
 
@@ -61,8 +75,8 @@ public struct Field {
     /// - Throws: Any non-validation related error
     public func validate(
         inContext context: ValidationContext,
-        on worker: Worker
+        on req: Request
     ) throws -> Future<[ValidationError]> {
-        return try _validate(context, worker)
+        return try _validate(context, req)
     }
 }

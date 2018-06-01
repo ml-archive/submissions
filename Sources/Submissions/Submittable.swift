@@ -8,12 +8,12 @@ public protocol Submittable: Decodable {
     /// Create a new instance from a value of the associated `Create` type.
     ///
     /// - Parameter create: The value with which to create a new instance.
-    init(_ create: Create)
+    init(_ create: Create) throws
 
     /// Updates an existing instance from a value of the associated `Update` type.
     ///
     /// - Parameter update: The value with which to update this instance.
-    mutating func update(_ update: Submission)
+    mutating func update(_ update: Submission) throws
 }
 
 extension Future where T: SubmissionType {
@@ -43,7 +43,7 @@ extension Future where T: Submittable {
                 .validate(inContext: .update, on: req)
                 .map { submission in
                     var mutableInstance = submittable
-                    mutableInstance.update(submission)
+                    try mutableInstance.update(submission)
                     return mutableInstance
             }
         }
