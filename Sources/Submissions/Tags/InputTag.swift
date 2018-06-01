@@ -2,9 +2,9 @@ import Leaf
 
 final class InputTag: TagRenderer {
     enum Keys: String {
-        case text = "text"
-        case email = "email"
-        case password = "password"
+        case text
+        case email
+        case password
     }
 
     struct InputData: Encodable {
