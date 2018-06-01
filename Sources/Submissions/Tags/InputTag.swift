@@ -1,8 +1,10 @@
-import Leaf
+import TemplateKit
 
 final class InputTag: TagRenderer {
+    enum InputType: String {
         case email
         case password
+        case text
     }
 
     struct InputData: Encodable {
@@ -20,7 +22,7 @@ final class InputTag: TagRenderer {
         let data = try tag.submissionsData()
 
         let config = try tag.container.make(SubmissionsConfig.self)
-        let leaf = try tag.container.make(LeafRenderer.self)
+        let renderer = try tag.container.make(TemplateRenderer.self)
 
         let type = tag.parameters[safe: 1]?.string.flatMap(InputType.init(rawValue:)) ?? .text
         let placeholder = tag.parameters[safe: 2]?.string
@@ -37,7 +39,7 @@ final class InputTag: TagRenderer {
             helpText: helpText
         )
 
-        return leaf
+        return renderer
             .render(config.viewPaths.for(type), viewData)
             .map { .data($0.data) }
     }

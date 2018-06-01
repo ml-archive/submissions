@@ -1,5 +1,4 @@
 import Service
-import Bootstrap
 import Vapor
 
 /// A provider that registers a FieldCache.
@@ -27,6 +26,5 @@ extension SubmissionsProvider {
     /// The Submission related tags.
     public static var tags: [String: TagRenderer] {
         return ["submissions:input": InputTag()]
-            .merging(BootstrapProvider.tags) { (submissions, bootstrap) in submissions }
     }
 }
