@@ -41,10 +41,7 @@ final class InputTag: TagRenderer {
 
         return leaf
             .render(config.viewPaths.fromTagType(type), viewData)
-            .map(to: TemplateData.self) { view in
-                // TODO: try data
-                .string(String(bytes: view.data, encoding: .utf8) ?? "")
-            }
+            .map { .data($0.data) }
     }
 }
 
