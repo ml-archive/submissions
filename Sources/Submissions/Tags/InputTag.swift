@@ -40,14 +40,14 @@ final class InputTag: TagRenderer {
         )
 
         return renderer
-            .render(config.viewPaths.for(type), viewData)
+            .render(config.tagTemplatePaths.path(for: type), viewData)
             .map { .data($0.data) }
     }
 }
 
-private extension SubmissionsViewPaths {
-    func `for`(_ key: InputTag.InputType) -> String {
-        switch key {
+private extension TagTemplatePaths {
+    func path(for inputType: InputTag.InputType) -> String {
+        switch inputType {
         case .text: return textField
         case .email: return emailField
         case .password: return passwordField
