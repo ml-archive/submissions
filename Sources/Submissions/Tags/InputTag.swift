@@ -1,8 +1,6 @@
 import Leaf
 
 final class InputTag: TagRenderer {
-    enum Keys: String {
-        case text
         case email
         case password
     }
@@ -24,7 +22,7 @@ final class InputTag: TagRenderer {
         let config = try tag.container.make(SubmissionsConfig.self)
         let leaf = try tag.container.make(LeafRenderer.self)
 
-        let type = tag.parameters[safe: 1]?.string.flatMap(Keys.init(rawValue:)) ?? .text
+        let type = tag.parameters[safe: 1]?.string.flatMap(InputType.init(rawValue:)) ?? .text
         let placeholder = tag.parameters[safe: 2]?.string
         let helpText = tag.parameters[safe: 3]?.string
 
@@ -40,13 +38,13 @@ final class InputTag: TagRenderer {
         )
 
         return leaf
-            .render(config.viewPaths.fromTagType(type), viewData)
+            .render(config.viewPaths.for(type), viewData)
             .map { .data($0.data) }
     }
 }
 
 private extension SubmissionsViewPaths {
-    func fromTagType(_ key: InputTag.Keys) -> String {
+    func `for`(_ key: InputTag.InputType) -> String {
         switch key {
         case .text: return textField
         case .email: return emailField
