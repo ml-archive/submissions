@@ -5,7 +5,6 @@ import Vapor
 public struct SubmissionValidationError: Error {}
 
 private struct ErrorResponse: Encodable {
-    
     /// Always set `error` to `true` in response.
     let error = true
 
@@ -17,7 +16,6 @@ private struct ErrorResponse: Encodable {
 }
 
 extension SubmissionValidationError: ResponseEncodable {
-
     /// See `ResponseEncodable`
     public func encode(for req: Request) throws -> Future<Response> {
         let errorResponse = try ErrorResponse(validationErrors: req.fieldCache().errors)

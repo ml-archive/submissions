@@ -16,7 +16,6 @@ public protocol SubmissionType: Decodable, Reflectable {
 }
 
 extension SubmissionType {
-
     /// Make a field entry corresponding to a key path.
     ///
     /// - Parameters:
@@ -24,6 +23,7 @@ extension SubmissionType {
     ///   - value: The value for this field.
     ///   - validators: The validators to use when validating the value.
     ///   - validate: A closure to perform any additional validation that requires async.
+    ///     Takes an optional value, a validation context, and a request. See `Field.Validate`.
     ///   - isOptional: Whether or not the value is allowed to be `nil`.
     ///   - errorOnNil: The error to be thrown in the `create` context for `nil` values when
     ///     `isRequired` is `true`.
@@ -55,6 +55,7 @@ extension SubmissionType {
     ///   - value: The value for this field.
     ///   - validators: The validators to use when validating the value.
     ///   - validate: A closure to perform any additional validation that requires async.
+    ///     Takes an optional value, a validation context, and a request. See `Field.Validate`.
     ///   - isRequired: Whether or not the value is allowed to be `nil`.
     ///   - errorOnNil: The error to be thrown in the `create` context for `nil` values when
     ///     `isRequired` is `true`.
@@ -127,7 +128,6 @@ extension SubmissionType {
 }
 
 extension BasicValidationError {
-
      /// The default error to throw when a value is empty when that is not valid.
      public static var onNil: BasicValidationError {
         return .init("Value may not be empty")
@@ -135,7 +135,6 @@ extension BasicValidationError {
 }
 
 extension Future where T: SubmissionType {
-    
     /// Convenience for calling `validate` on submissions produced by this `Future`.
     ///
     /// - Parameters:

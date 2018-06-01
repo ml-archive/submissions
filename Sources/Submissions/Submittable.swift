@@ -17,7 +17,6 @@ public protocol Submittable: Decodable {
 }
 
 extension Future where T: SubmissionType {
-
     /// Creates a new submittable value based on the submission payload after it is validated.
     ///
     /// - Parameter req: The current `Request`.
@@ -32,7 +31,6 @@ extension Future where T: SubmissionType {
 }
 
 extension Future where T: Submittable {
-
     /// Updated a submittable value based on the submission payload after it is validated.
     ///
     /// - Parameter req: The current `Request`.

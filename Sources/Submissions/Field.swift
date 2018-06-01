@@ -59,8 +59,8 @@ public struct Field {
                     try validator(value, context, req)
                 }
                 .flatten(on: req)
-                .map(to: [ValidationError].self) { errors in
-                    return Array(errors.joined())
+                .map { errors in
+                    Array(errors.joined())
                 }
                 .map { validationErrors + $0 }
         }

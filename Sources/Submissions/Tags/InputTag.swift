@@ -23,16 +23,10 @@ final class InputTag: TagRenderer {
 
         let config = try tag.container.make(SubmissionsConfig.self)
         let leaf = try tag.container.make(LeafRenderer.self)
-        var type = Keys.text
+
+        let type = tag.parameters[safe: 1]?.string.flatMap(Keys.init(rawValue:)) ?? .text
         let placeholder = tag.parameters[safe: 2]?.string
         let helpText = tag.parameters[safe: 3]?.string
-
-        if
-            let providedType = tag.parameters[safe: 1]?.string,
-            let parsedType = Keys(rawValue: providedType)
-        {
-            type = parsedType
-        }
 
         let viewData = InputData(
             key: data.key,
@@ -45,8 +39,10 @@ final class InputTag: TagRenderer {
             helpText: helpText
         )
 
-        return leaf.render(config.viewPaths.fromTagType(type), viewData)
+        return leaf
+            .render(config.viewPaths.fromTagType(type), viewData)
             .map(to: TemplateData.self) { view in
+                // TODO: try data
                 .string(String(bytes: view.data, encoding: .utf8) ?? "")
             }
     }
@@ -55,9 +51,9 @@ final class InputTag: TagRenderer {
 private extension SubmissionsViewPaths {
     func fromTagType(_ key: InputTag.Keys) -> String {
         switch key {
-        case .text: return self.textField
-        case .email: return self.emailField
-        case .password: return self.passwordField
+        case .text: return textField
+        case .email: return emailField
+        case .password: return passwordField
         }
     }
 }
