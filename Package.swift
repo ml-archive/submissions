@@ -8,11 +8,12 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/nodes-vapor/sugar.git", from: "3.0.0-alpha"),
+        .package(url: "https://github.com/nodes-vapor/bootstrap.git", .branch("master")),
         .package(url: "https://github.com/vapor/leaf.git", from: "3.0.0-rc"),
         .package(url: "https://github.com/vapor/vapor.git", from: "3.0.0")
     ],
     targets: [
-        .target(name: "Submissions", dependencies: ["Leaf", "Sugar", "Vapor"]),
+        .target(name: "Submissions", dependencies: ["Leaf", "Sugar", "Vapor", "Bootstrap"]),
         .testTarget(name: "SubmissionsTests", dependencies: ["Submissions"])
     ]
 )
