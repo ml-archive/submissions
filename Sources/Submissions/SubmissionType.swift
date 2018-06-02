@@ -24,16 +24,18 @@ extension SubmissionType {
     ///   - validators: The validators to use when validating the value.
     ///   - validate: A closure to perform any additional validation that requires async.
     ///     Takes an optional value, a validation context, and a request. See `Field.Validate`.
-    ///   - isOptional: Whether or not the value is allowed to be `nil`.
-    ///   - errorOnNil: The error to be thrown in the `create` context for `nil` values when
-    ///     `isRequired` is `true`.
+    ///   - isRequired: Whether or not the value is allowed to be absent.
+    ///   - absentValueStrategy: Determines which (string) values to treat as absent.
+    ///   - errorOnAbsense: The error to be thrown in the `create` context when value is absent as
+    ///     determined by `absentValueStrategy` and `isRequired` is `true`.
     public func makeFieldEntry<T: CustomStringConvertible>(
         keyPath: KeyPath<Self, T>,
         label: String? = nil,
         validators: [Validator<T>] = [],
         asyncValidators: [Field.Validate<T>] = [],
         isRequired: Bool = true,
-        errorOnNil: ValidationError = BasicValidationError.onNil
+        absentValueStrategy: AbsentValueStrategy = .nil,
+        errorOnAbsense: ValidationError
     ) throws -> FieldEntry {
         return try .init(
             keyPath: keyPath,
@@ -43,7 +45,8 @@ extension SubmissionType {
                 validators: validators,
                 asyncValidators: asyncValidators,
                 isRequired: isRequired,
-                errorOnNil: errorOnNil
+                absentValueStrategy: absentValueStrategy,
+                errorOnAbsense: errorOnAbsense
             )
         )
     }
@@ -56,16 +59,18 @@ extension SubmissionType {
     ///   - validators: The validators to use when validating the value.
     ///   - validate: A closure to perform any additional validation that requires async.
     ///     Takes an optional value, a validation context, and a request. See `Field.Validate`.
-    ///   - isRequired: Whether or not the value is allowed to be `nil`.
-    ///   - errorOnNil: The error to be thrown in the `create` context for `nil` values when
-    ///     `isRequired` is `true`.
+    ///   - isRequired: Whether or not the value is allowed to be absent.
+    ///   - absentValueStrategy: Determines which (string) values to treat as absent.
+    ///   - errorOnAbsense: The error to be thrown in the `create` context when value is absent as
+    ///     determined by `absentValueStrategy` and `isRequired` is `true`.
     public func makeFieldEntry<T: CustomStringConvertible>(
         keyPath: KeyPath<Self, T?>,
         label: String? = nil,
         validators: [Validator<T>] = [],
         asyncValidators: [Field.Validate<T>] = [],
         isRequired: Bool = true,
-        errorOnNil: ValidationError = BasicValidationError.onNil
+        absentValueStrategy: AbsentValueStrategy = .nil,
+        errorOnAbsense: ValidationError
     ) throws -> FieldEntry {
         return try .init(
             keyPath: keyPath,
@@ -75,7 +80,8 @@ extension SubmissionType {
                 validators: validators,
                 asyncValidators: asyncValidators,
                 isRequired: isRequired,
-                errorOnNil: errorOnNil
+                absentValueStrategy: absentValueStrategy,
+                errorOnAbsense: errorOnAbsense
             )
         )
     }
