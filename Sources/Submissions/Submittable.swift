@@ -38,7 +38,7 @@ extension Future where T: Submittable {
     public func updateValid(on req: Request) -> Future<T> {
         return flatMap(to: T.self) { submittable in
             try req.content.decode(T.Submission.self)
-                .validate(inContext: .update, on: req)
+                .validate(submittable, inContext: .update, on: req)
                 .map { submission in
                     var mutableInstance = submittable
                     try mutableInstance.update(submission)
@@ -54,7 +54,7 @@ extension Future where T: Submittable {
     /// - Returns: The unchanged submittable value.
     public func populateFields(on req: Request) -> Future<T> {
         return self.try { submittable in
-            try req.populateFields(with: T.Submission(submittable).makeFields())
+            try req.populateFields(with: T.Submission(submittable).makeFields().mapValues(AnyField.init))
         }
     }
 }

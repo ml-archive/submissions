@@ -3,7 +3,7 @@ import Vapor
 
 /// A `FieldCache` contains the data used by `Tag`s to produce the fields in html forms.
 public final class FieldCache: Service {
-    var fields: [String: Field] = [:]
+    var fields: [String: AnyField] = [:]
     var errors: [String: [String]] = [:]
 }
 
@@ -23,7 +23,7 @@ extension FieldCache {
     /// Returns the value for a field.
     ///
     /// - Parameter key: The identifier of the field.
-    public subscript(valueFor key: String) -> Field? {
+    public subscript(valueFor key: String) -> AnyField? {
         get {
             return fields[key]
         }
@@ -47,7 +47,7 @@ extension Request {
     /// - Parameter submittable: The type for which to create the fields.
     /// - Throws: When no `FieldCache` has been registered with this container.
     public func populateFields<T: Submittable>(_ submittable: T.Type) throws {
-        try populateFields(with: T.Submission(nil).makeFields())
+        try populateFields(with: T.Submission(nil).makeFields().mapValues(AnyField.init))
     }
 
     /// Sets any fields and errors on the field cache of this `Container`.
@@ -57,7 +57,7 @@ extension Request {
     ///   - errors: Arrays of `ValidationError`s per field name.
     /// - Throws: When no `FieldCache` has been registered with this container.
     public func populateFields(
-        with fields: [String: Field],
+        with fields: [String: AnyField],
         andErrors errors: [String: [ValidationError]] = [:]
     ) throws {
         let fieldCache = try self.fieldCache()
