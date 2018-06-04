@@ -22,7 +22,7 @@ extension SubmissionType {
     ///   - label: A label describing this field.
     ///   - value: The value for this field.
     ///   - validators: The validators to use when validating the value.
-    ///   - validate: A closure to perform any additional validation that requires async.
+    ///   - asyncValidators: A closure to perform any additional validation that requires async.
     ///     Takes an optional value, a validation context, and a request. See `Field.Validate`.
     ///   - isRequired: Whether or not the value is allowed to be absent.
     ///   - absentValueStrategy: Determines which (string) values to treat as absent.
@@ -57,7 +57,7 @@ extension SubmissionType {
     ///   - label: A label describing this field.
     ///   - value: The value for this field.
     ///   - validators: The validators to use when validating the value.
-    ///   - validate: A closure to perform any additional validation that requires async.
+    ///   - asyncValidators: A closure to perform any additional validation that requires async.
     ///     Takes an optional value, a validation context, and a request. See `Field.Validate`.
     ///   - isRequired: Whether or not the value is allowed to be absent.
     ///   - absentValueStrategy: Determines which (string) values to treat as absent.
