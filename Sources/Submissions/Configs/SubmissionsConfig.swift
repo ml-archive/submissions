@@ -1,17 +1,23 @@
 import Service
 
+/// Configuration for Submissions
 public struct SubmissionsConfig: Service {
-    public let viewPaths: SubmissionsViewPaths
+    /// Configuration for template paths used when rendering tags.
+    public let tagTemplatePaths: TagTemplatePaths
 
+    /// Create a new config.
+    ///
+    /// - Parameter viewPaths: view path configuration.
     public init(
-        viewPaths: SubmissionsViewPaths
+        tagTemplatePaths: TagTemplatePaths
     ) {
-        self.viewPaths = viewPaths
+        self.tagTemplatePaths = tagTemplatePaths
     }
 
+    /// Default configuration.
     public static var `default`: SubmissionsConfig {
         return .init(
-            viewPaths: .init()
+            tagTemplatePaths: .init()
         )
     }
 }

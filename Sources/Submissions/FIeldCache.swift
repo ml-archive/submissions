@@ -8,7 +8,6 @@ public final class FieldCache: Service {
 }
 
 extension FieldCache {
-    
     /// Returns the errors for a field.
     ///
     /// - Parameter key: The identifier of the field.
@@ -35,13 +34,12 @@ extension FieldCache {
 }
 
 extension Request {
-
     /// Creates or retreives a field cache object.
     ///
     /// - Returns: The `FieldCache`
     /// - Throws: When no `FieldCache` has been registered with this container.
     public func fieldCache() throws -> FieldCache {
-        return try self.privateContainer.make()
+        return try privateContainer.make()
     }
 
     /// Sets any fields on the field cache of this `Container` for an empty `Submission` value.

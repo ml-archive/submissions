@@ -23,8 +23,8 @@ public struct Field {
         validators: [Validator<T>] = [],
         asyncValidators: [Validate<T>],
         isRequired: Bool = true,
-        allowValues: [String] = [""],
-        errorOnNil: ValidationError
+        absentValueStrategy: AbsentValueStrategy = .nil,
+        errorOnAbsense: ValidationError
     ) {
         self.label = label
         self.value = value?.description
@@ -32,15 +32,11 @@ public struct Field {
         _validate = { context, req in
             let validationErrors: [ValidationError]
 
-            switch (value, context, isRequired) {
+            switch (absentValueStrategy.valueIfPresent(value), context, isRequired) {
             case (.none, .create, true):
-                validationErrors = [errorOnNil]
+                validationErrors = [errorOnAbsense]
             case (.some(let value), _, _):
                 var errors: [ValidationError] = []
-
-                guard !allowValues.contains(value.description) else {
-                    fallthrough
-                }
 
                 for validator in validators {
                     do {
@@ -59,10 +55,9 @@ public struct Field {
                     try validator(value, context, req)
                 }
                 .flatten(on: req)
-                .map(to: [ValidationError].self) { errors in
-                    return Array(errors.joined())
+                .map { asyncValidationErrors in
+                    validationErrors + Array(asyncValidationErrors.joined())
                 }
-                .map { validationErrors + $0 }
         }
     }
 

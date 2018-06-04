@@ -16,24 +16,26 @@ public protocol SubmissionType: Decodable, Reflectable {
 }
 
 extension SubmissionType {
-
     /// Make a field entry corresponding to a key path.
     ///
     /// - Parameters:
     ///   - label: A label describing this field.
     ///   - value: The value for this field.
     ///   - validators: The validators to use when validating the value.
-    ///   - validate: A closure to perform any additional validation that requires async.
-    ///   - isOptional: Whether or not the value is allowed to be `nil`.
-    ///   - errorOnNil: The error to be thrown in the `create` context for `nil` values when
-    ///     `isRequired` is `true`.
+    ///   - asyncValidators: A closure to perform any additional validation that requires async.
+    ///     Takes an optional value, a validation context, and a request. See `Field.Validate`.
+    ///   - isRequired: Whether or not the value is allowed to be absent.
+    ///   - absentValueStrategy: Determines which (string) values to treat as absent.
+    ///   - errorOnAbsense: The error to be thrown in the `create` context when value is absent as
+    ///     determined by `absentValueStrategy` and `isRequired` is `true`.
     public func makeFieldEntry<T: CustomStringConvertible>(
         keyPath: KeyPath<Self, T>,
         label: String? = nil,
         validators: [Validator<T>] = [],
         asyncValidators: [Field.Validate<T>] = [],
         isRequired: Bool = true,
-        errorOnNil: ValidationError = BasicValidationError.onNil
+        absentValueStrategy: AbsentValueStrategy = .nil,
+        errorOnAbsense: ValidationError
     ) throws -> FieldEntry {
         return try .init(
             keyPath: keyPath,
@@ -43,7 +45,8 @@ extension SubmissionType {
                 validators: validators,
                 asyncValidators: asyncValidators,
                 isRequired: isRequired,
-                errorOnNil: errorOnNil
+                absentValueStrategy: absentValueStrategy,
+                errorOnAbsense: errorOnAbsense
             )
         )
     }
@@ -54,17 +57,20 @@ extension SubmissionType {
     ///   - label: A label describing this field.
     ///   - value: The value for this field.
     ///   - validators: The validators to use when validating the value.
-    ///   - validate: A closure to perform any additional validation that requires async.
-    ///   - isRequired: Whether or not the value is allowed to be `nil`.
-    ///   - errorOnNil: The error to be thrown in the `create` context for `nil` values when
-    ///     `isRequired` is `true`.
+    ///   - asyncValidators: A closure to perform any additional validation that requires async.
+    ///     Takes an optional value, a validation context, and a request. See `Field.Validate`.
+    ///   - isRequired: Whether or not the value is allowed to be absent.
+    ///   - absentValueStrategy: Determines which (string) values to treat as absent.
+    ///   - errorOnAbsense: The error to be thrown in the `create` context when value is absent as
+    ///     determined by `absentValueStrategy` and `isRequired` is `true`.
     public func makeFieldEntry<T: CustomStringConvertible>(
         keyPath: KeyPath<Self, T?>,
         label: String? = nil,
         validators: [Validator<T>] = [],
         asyncValidators: [Field.Validate<T>] = [],
         isRequired: Bool = true,
-        errorOnNil: ValidationError = BasicValidationError.onNil
+        absentValueStrategy: AbsentValueStrategy = .nil,
+        errorOnAbsense: ValidationError
     ) throws -> FieldEntry {
         return try .init(
             keyPath: keyPath,
@@ -74,7 +80,8 @@ extension SubmissionType {
                 validators: validators,
                 asyncValidators: asyncValidators,
                 isRequired: isRequired,
-                errorOnNil: errorOnNil
+                absentValueStrategy: absentValueStrategy,
+                errorOnAbsense: errorOnAbsense
             )
         )
     }
@@ -127,7 +134,6 @@ extension SubmissionType {
 }
 
 extension BasicValidationError {
-
      /// The default error to throw when a value is empty when that is not valid.
      public static var onNil: BasicValidationError {
         return .init("Value may not be empty")
@@ -135,7 +141,6 @@ extension BasicValidationError {
 }
 
 extension Future where T: SubmissionType {
-    
     /// Convenience for calling `validate` on submissions produced by this `Future`.
     ///
     /// - Parameters:

@@ -1,10 +1,10 @@
-import Leaf
+import TemplateKit
 
 final class InputTag: TagRenderer {
-    enum Keys: String {
-        case text = "text"
-        case email = "email"
-        case password = "password"
+    enum InputType: String {
+        case email
+        case password
+        case text
     }
 
     struct InputData: Encodable {
@@ -22,17 +22,11 @@ final class InputTag: TagRenderer {
         let data = try tag.submissionsData()
 
         let config = try tag.container.make(SubmissionsConfig.self)
-        let leaf = try tag.container.make(LeafRenderer.self)
-        var type = Keys.text
+        let renderer = try tag.container.make(TemplateRenderer.self)
+
+        let type = tag.parameters[safe: 1]?.string.flatMap(InputType.init(rawValue:)) ?? .text
         let placeholder = tag.parameters[safe: 2]?.string
         let helpText = tag.parameters[safe: 3]?.string
-
-        if
-            let providedType = tag.parameters[safe: 1]?.string,
-            let parsedType = Keys(rawValue: providedType)
-        {
-            type = parsedType
-        }
 
         let viewData = InputData(
             key: data.key,
@@ -45,19 +39,18 @@ final class InputTag: TagRenderer {
             helpText: helpText
         )
 
-        return leaf.render(config.viewPaths.fromTagType(type), viewData)
-            .map(to: TemplateData.self) { view in
-                .string(String(bytes: view.data, encoding: .utf8) ?? "")
-            }
+        return renderer
+            .render(config.tagTemplatePaths.path(for: type), viewData)
+            .map { .data($0.data) }
     }
 }
 
-private extension SubmissionsViewPaths {
-    func fromTagType(_ key: InputTag.Keys) -> String {
-        switch key {
-        case .text: return self.textField
-        case .email: return self.emailField
-        case .password: return self.passwordField
+private extension TagTemplatePaths {
+    func path(for inputType: InputTag.InputType) -> String {
+        switch inputType {
+        case .text: return textField
+        case .email: return emailField
+        case .password: return passwordField
         }
     }
 }

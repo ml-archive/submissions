@@ -1,4 +1,3 @@
-import Core
 import Vapor
 
 /// A field with a key
