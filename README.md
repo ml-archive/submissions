@@ -32,6 +32,8 @@ targets: [
 ]
 ```
 
+Next, copy/paste the `Resources/Views/Submissions` folder into your project in order to be able to use the provided Leaf tags. These files can be changed as explained in the [Leaf Tags](#leaf-tags) section, however it's recommended to copy this folder to your project anyway. This makes it easier for you to keep track of updates and your project will work if you decide later on to not use your own customized leaf files.
+
 ## Introduction
 
 Submissions was written to minimize the amount of boilerplate needed to write the common tasks of rendering forms and processing and validating data from POST and PATCH requests. Submissions makes it easy to present detailed validation errors for web users as well as API consumers.
@@ -90,7 +92,7 @@ extension Todo.Submission {
     ...
 ```
 
-Using the `makeFieldEntry` helper function we can use type-safe `KeyPath`s to refer to the values in our `Submission` struct. In addition to the list of validators it is possible to supply a `validate` closure that performs async validation. This can be useful when validation requires a call to the database for instance. See the API docs for further information.
+Using the `makeFieldEntry` helper function we can use type-safe `KeyPath`s to refer to the values in our `Submission` struct. In addition to the list of validators it is possible to supply `asyncValidators` which is a list of closures that performs async validation. This can be useful when validation requires a call to the database for instance. See the API docs for further information. If `isRequired` is set to `false` then the field will accept `nil` and `""` (the empty string) as values. Otherwise, you can specify the `absentValueStrategy` to make it behave as you expect.
 
 The submission type is also used by tags to render labels and any existing values for input fields in a form. Therefore we'll need to provide a way to create a `Submission` value from a todo, or `nil` in case we're creating a new one.
 
@@ -201,27 +203,26 @@ api.patch("todos", Todo.parameter, use: apiTodoController.update)
 
 ### Validating HTML form requests
 
-> The following examples assume you have your Leaf file (edit.leaf) in a folder called "Todo" under "Resources". 
-
 #### Leaf Tags
 
 When building your HTML form using Leaf you can add inputs for your model's fields like so:
 
 ```
-#textgroup("title")
+#submissions:input("title", "text", "Enter title", "Please enter a title")
 ```
 
 This will render a form group with an input and any errors stored in the field cache for the "title" field. This produces the following Bootstrap 4 style HTML (with in this case a validation error):
 
 ```html
-<div>
-    <label class="control-label" for="title">Title</label>
-    <input type="text" class="form-control is-invalid" id="title" name="title" value="four">
+<div class="form-group">
+    <label for="title">Title</label>
+    <input type="text" class="form-control is-invalid" id="title" name="title" value="four" placeholder="Enter title">
+    <small id="titleHelp" class="form-text text-muted">Please enter a title</small>
     <div class="invalid-feedback"><div>data is not larger than 5</div></div>
 </div>
 ```
 
-> Note: Currently only "textgroup" is supported
+> Note: Currently only "input" with variants for email, password and text is supported.
 
 Before we can use the tag we have to register it in `configure.swift`. We'll use a helper function from the [`Sugar`](https://github.com/nodes-vapor/sugar/tree/vapor-3) package. 
 
@@ -242,6 +243,8 @@ import Sugar
 
 ...
 ```
+
+If you want to fully customize the way the input groups are being generated, you are free to override the Leaf paths for the input group when setting up the provider by supplying your own `SubmissionsConfig`.
 
 #### Rendering the forms
 
@@ -267,7 +270,7 @@ An empty form can be created by populating the fields using the `Submittable` ty
 ```swift
 func renderCreate(req: Request) throws -> Future<View> {
     try req.populateFields(Todo.self)
-    return try req.view().render("Todo/edit")
+    return try req.privateContainer().make(LeafRenderer.self).render("Todo/edit")
 }
 ```
 
@@ -276,6 +279,8 @@ and in `routes.swift` we'll add:
 router.get ("todos/create", use: frontendTodoController.renderCreate)
 ```
 
+> Note how we're using the `privateContainer` on the `Request` since that is where the field cache is registered. This is done to ensure the field cache does not outlive the request.
+
 In order to populate the field with the values of an existing entity we need to first load our entity and put its values in the field cache like so.
 
 ```swift
@@ -283,7 +288,7 @@ func renderEdit(req: Request) throws -> Future<View> {
     return try req.parameters.next(Todo.self)
         .populateFields(on: req)
         .flatMap { _ in
-            try req.view().render("Todo/edit")
+            try req.privateContainer().make(LeafRenderer.self).render("Todo/edit")
         }
 }
 ```
@@ -336,7 +341,9 @@ One way to deal with errors is to render the edit view again which will now show
 func handleCreateOrUpdateError(on req: Request) -> (Error) throws -> Future<Response> {
     return { _ in
         try req
-            .view().render("Todo/edit")
+            .privateContainer
+            .make(LeafRenderer.self)
+            .render("Todo/edit")
             .flatMap { view in
                 view.encode(for: req)
             }
