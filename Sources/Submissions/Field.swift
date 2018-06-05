@@ -65,14 +65,14 @@ public struct Field<S: Submittable> {
     ///
     /// - Parameters:
     ///   - context: The context to respect when validating.
-    ///   - worker: A `Worker` to perform the async validation on.
     ///   - submittable: An optional existing related submittable for reference when validating.
+    ///   - req: A `Request` to perform the async validation on.
     /// - Returns: An array of `ValidationError`s in the `Future`.
     /// - Throws: Any non-validation related error
     public func validate(
         inContext context: ValidationContext,
-        on req: Request,
-        with submittable: S? = nil
+        with submittable: S? = nil,
+        on req: Request
     ) throws -> Future<[ValidationError]> {
         return try _validate(context, submittable, req)
     }
