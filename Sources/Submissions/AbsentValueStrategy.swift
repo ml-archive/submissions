@@ -16,9 +16,9 @@ extension AbsentValueStrategy {
         switch (self, value) {
         case (.nil, _):
             return value
-        case (.equal(let other), .some(let value)) where value.description == other:
+        case (.equal(let other), .some(let value)) where value.description != other:
             return value
-        case (.in(let others), .some(let value)) where others.contains(value.description):
+        case (.in(let others), .some(let value)) where !others.contains(value.description):
             return value
         default:
             return nil
