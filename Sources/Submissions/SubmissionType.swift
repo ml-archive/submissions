@@ -86,7 +86,7 @@ extension SubmissionType {
         )
     }
 
-    /// Trasnforms the field entries into a map of keys to fields.
+    /// Transforms the field entries into a map of keys to fields.
     ///
     /// - Returns: The fields keyed by their corresponding paths
     /// - Throws: When creating the field entries fails.
@@ -99,15 +99,15 @@ extension SubmissionType {
     /// validation errors and the fields.
     ///
     /// - Parameters:
-    ///   - submittable: An optional existing related submittable for reference when validating.
     ///   - context: The context (update/create) to respect when validating.
+    ///   - submittable: An optional existing related submittable for reference when validating.
     ///   - req: The `Request` with the event loop to validate on and the field cache to store
     ///     any validation errors.
     /// - Returns: A `Future` of `Self`
     /// - Throws: any non-validation related errors that may occur.
     public func validate(
-        _ submittable: S? = nil,
         inContext context: ValidationContext,
+        with submittable: S? = nil,
         on req: Request
     ) throws -> Future<Self> {
         let fields = try makeFields()
@@ -149,18 +149,18 @@ extension Future where T: SubmissionType {
     /// Convenience for calling `validate` on submissions produced by this `Future`.
     ///
     /// - Parameters:
-    ///   - submittable: An optional existing related submittable for reference when validating.
     ///   - context: The context (update/create) to respect when validating
+    ///   - submittable: An optional existing related submittable for reference when validating.
     ///   - req: The `Request` with the event loop to validate on and the field cache to store
     ///     any validation errors.
     /// - Returns: A `Future` of the `SubmissionType` value.
     public func validate(
-        _ submittable: T.S? = nil,
         inContext context: ValidationContext,
+        with submittable: T.S? = nil,
         on req: Request
     ) -> Future<T> {
         return flatMap { submission in
-            try submission.validate(submittable, inContext: context, on: req)
+            try submission.validate(inContext: context, with: submittable, on: req)
         }
     }
 }

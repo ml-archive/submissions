@@ -1,7 +1,9 @@
 import TemplateKit
 
 public extension TagContext {
-    struct SubmissionsData: Encodable {
+    /// Encapsulates relevant submissions data that can be used for validation output.
+    /// For example when rendering the form.
+    public struct SubmissionsData: Encodable {
         let key: String
         let value: String?
         let label: String?
@@ -10,6 +12,10 @@ public extension TagContext {
         let hasErrors: Bool
     }
 
+    /// Pulls out any relevant submissions data for the given field using the `FieldCache`.
+    ///
+    /// - Returns: The submission data related to the given field.
+    /// - Throws: When the name of the field is missing.
     public func submissionsData() throws -> SubmissionsData {
         let fieldCache = try container.make(FieldCache.self)
 

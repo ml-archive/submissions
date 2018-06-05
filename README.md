@@ -32,7 +32,7 @@ targets: [
 ]
 ```
 
-Next, copy/paste the `Resources/Views/Submissions` folder into your project in order to be able to use the provided Leaf tags.
+Next, copy/paste the `Resources/Views/Submissions` folder into your project in order to be able to use the provided Leaf tags. These files can be changed as explained in the [Leaf Tags](#leaf-tags) section, however it's recommended to copy this folder to your project anyway. This makes it easier for you to keep track of updates and your project will work if you decide later on to not use your own customized leaf files.
 
 ## Introduction
 
@@ -279,7 +279,7 @@ and in `routes.swift` we'll add:
 router.get ("todos/create", use: frontendTodoController.renderCreate)
 ```
 
-> Note how we're using the `privateContainer` on the `Request` to limit the scope of our form validation.
+> Note how we're using the `privateContainer` on the `Request` since that is where the field cache is registered. This is done to ensure the field cache does not outlive the request.
 
 In order to populate the field with the values of an existing entity we need to first load our entity and put its values in the field cache like so.
 
