@@ -34,7 +34,7 @@ extension SubmissionType {
         validators: [Validator<T>] = [],
         asyncValidators: [Field<S>.Validate<T>] = [],
         isRequired: Bool = true,
-        absentValueStrategy: AbsentValueStrategy = .nil,
+        absentValueStrategy: AbsentValueStrategy = .equal(""),
         errorOnAbsense: ValidationError = BasicValidationError.onEmpty
     ) throws -> FieldEntry<S> {
         return try .init(
@@ -69,7 +69,7 @@ extension SubmissionType {
         validators: [Validator<T>] = [],
         asyncValidators: [Field<S>.Validate<T>] = [],
         isRequired: Bool = true,
-        absentValueStrategy: AbsentValueStrategy = .nil,
+        absentValueStrategy: AbsentValueStrategy = .equal(""),
         errorOnAbsense: ValidationError = BasicValidationError.onEmpty
     ) throws -> FieldEntry<S> {
         return try .init(

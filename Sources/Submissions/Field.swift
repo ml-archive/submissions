@@ -12,10 +12,10 @@ public struct Field<S: Submittable> {
     /// Whether or not values are allowed to be nil
     public let isRequired: Bool
 
-    private let _validate: (ValidationContext, Request, S?) throws -> Future<[ValidationError]>
+    private let _validate: (ValidationContext, S?, Request) throws -> Future<[ValidationError]>
 
     /// A closure that can perform async validation of a value in a validation context on a worker.
-    public typealias Validate<T> = (T?, ValidationContext, Request, S?) throws -> Future<[ValidationError]>
+    public typealias Validate<T> = (T?, ValidationContext, S?, Request) throws -> Future<[ValidationError]>
 
     init<T: CustomStringConvertible>(
         label: String? = nil,
@@ -23,13 +23,13 @@ public struct Field<S: Submittable> {
         validators: [Validator<T>] = [],
         asyncValidators: [Validate<T>],
         isRequired: Bool = true,
-        absentValueStrategy: AbsentValueStrategy = .nil,
+        absentValueStrategy: AbsentValueStrategy = .equal(""),
         errorOnAbsense: ValidationError
     ) {
         self.label = label
         self.value = value?.description
         self.isRequired = isRequired
-        _validate = { context, req, submittable in
+        _validate = { context, submittable, req in
             let validationErrors: [ValidationError]
 
             switch (absentValueStrategy.valueIfPresent(value), context, isRequired) {
@@ -52,7 +52,7 @@ public struct Field<S: Submittable> {
 
             return try asyncValidators
                 .map { validator in
-                    try validator(value, context, req, submittable)
+                    try validator(value, context, submittable, req)
                 }
                 .flatten(on: req)
                 .map { asyncValidationErrors in
@@ -74,6 +74,6 @@ public struct Field<S: Submittable> {
         on req: Request,
         with submittable: S? = nil
     ) throws -> Future<[ValidationError]> {
-        return try _validate(context, req, submittable)
+        return try _validate(context, submittable, req)
     }
 }
