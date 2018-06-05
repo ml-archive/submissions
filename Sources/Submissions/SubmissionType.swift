@@ -5,7 +5,7 @@ public protocol SubmissionType: Decodable, Reflectable {
     associatedtype S: Submittable
 
     /// The field entries (fields with associated keys).
-    func fieldEntries() throws -> [FieldEntry]
+    func fieldEntries() throws -> [FieldEntry<S>]
 
     /// Create a submission value based on an optional `Submittable` value.
     /// Supply a non-nil value when editing an entity to populate a form with its values
@@ -32,11 +32,11 @@ extension SubmissionType {
         keyPath: KeyPath<Self, T>,
         label: String? = nil,
         validators: [Validator<T>] = [],
-        asyncValidators: [Field.Validate<T>] = [],
+        asyncValidators: [Field<S>.Validate<T>] = [],
         isRequired: Bool = true,
         absentValueStrategy: AbsentValueStrategy = .nil,
-        errorOnAbsense: ValidationError
-    ) throws -> FieldEntry {
+        errorOnAbsense: ValidationError = BasicValidationError.onEmpty
+    ) throws -> FieldEntry<S> {
         return try .init(
             keyPath: keyPath,
             field: Field(
@@ -67,11 +67,11 @@ extension SubmissionType {
         keyPath: KeyPath<Self, T?>,
         label: String? = nil,
         validators: [Validator<T>] = [],
-        asyncValidators: [Field.Validate<T>] = [],
+        asyncValidators: [Field<S>.Validate<T>] = [],
         isRequired: Bool = true,
         absentValueStrategy: AbsentValueStrategy = .nil,
-        errorOnAbsense: ValidationError
-    ) throws -> FieldEntry {
+        errorOnAbsense: ValidationError = BasicValidationError.onEmpty
+    ) throws -> FieldEntry<S> {
         return try .init(
             keyPath: keyPath,
             field: Field(
@@ -90,7 +90,7 @@ extension SubmissionType {
     ///
     /// - Returns: The fields keyed by their corresponding paths
     /// - Throws: When creating the field entries fails.
-    func makeFields() throws -> [String: Field] {
+    func makeFields() throws -> [String: Field<S>] {
         return try Dictionary(fieldEntries().map { ($0.key, $0.field) }) { $1 }
     }
 
@@ -105,15 +105,16 @@ extension SubmissionType {
     /// - Returns: A `Future` of `Self`
     /// - Throws: any non-validation related errors that may occur.
     public func validate(
+        _ submittable: S? = nil,
         inContext context: ValidationContext,
         on req: Request // TODO: Update docs
     ) throws -> Future<Self> {
         let fields = try makeFields()
 
         return try fields
-            .compactMap { key, value in
-                try value
-                    .validate(inContext: context, on: req)
+            .compactMap { key, field in
+                try field
+                    .validate(inContext: context, on: req, with: submittable)
                     .map { errors in
                         (key, errors)
                     }
@@ -125,7 +126,10 @@ extension SubmissionType {
             .map { errors in
                 let validationErrors = [String: [ValidationError]](uniqueKeysWithValues: errors)
                 if !validationErrors.isEmpty {
-                    try req.populateFields(with: fields, andErrors: validationErrors)
+                    try req.populateFields(
+                        with: fields.mapValues(AnyField.init),
+                        andErrors: validationErrors
+                    )
                     throw SubmissionValidationError()
                 }
                 return self
@@ -135,7 +139,7 @@ extension SubmissionType {
 
 extension BasicValidationError {
      /// The default error to throw when a value is empty when that is not valid.
-     public static var onNil: BasicValidationError {
+     public static var onEmpty: BasicValidationError {
         return .init("Value may not be empty")
     }
 }
@@ -148,9 +152,9 @@ extension Future where T: SubmissionType {
     ///   - container: The container with the event loop to validate on and the field cache to store
     ///     any validation errors.
     /// - Returns: A `Future` of the `SubmissionType` value.
-    public func validate(inContext context: ValidationContext, on request: Request) -> Future<T> { // TODO: Update docs
+    public func validate(_ submittable: T.S? = nil, inContext context: ValidationContext, on request: Request) -> Future<T> { // TODO: Update docs
         return flatMap { submission in
-            try submission.validate(inContext: context, on: request)
+            try submission.validate(submittable, inContext: context, on: request)
         }
     }
 }

@@ -2,7 +2,7 @@ import Validation
 import Vapor
 
 /// Represents a property that can be rendered in an html form and validated on submission.
-public struct Field {
+public struct Field<S: Submittable> {
     /// A label describing this field. Used by Tags to render alongside an input field.
     public let label: String?
 
@@ -12,10 +12,10 @@ public struct Field {
     /// Whether or not values are allowed to be nil
     public let isRequired: Bool
 
-    private let _validate: (ValidationContext, Request) throws -> Future<[ValidationError]>
+    private let _validate: (ValidationContext, Request, S?) throws -> Future<[ValidationError]>
 
     /// A closure that can perform async validation of a value in a validation context on a worker.
-    public typealias Validate<T> = (T?, ValidationContext, Request) throws -> Future<[ValidationError]>
+    public typealias Validate<T> = (T?, ValidationContext, Request, S?) throws -> Future<[ValidationError]>
 
     init<T: CustomStringConvertible>(
         label: String? = nil,
@@ -29,7 +29,7 @@ public struct Field {
         self.label = label
         self.value = value?.description
         self.isRequired = isRequired
-        _validate = { context, req in
+        _validate = { context, req, submittable in
             let validationErrors: [ValidationError]
 
             switch (absentValueStrategy.valueIfPresent(value), context, isRequired) {
@@ -52,7 +52,7 @@ public struct Field {
 
             return try asyncValidators
                 .map { validator in
-                    try validator(value, context, req)
+                    try validator(value, context, req, submittable)
                 }
                 .flatten(on: req)
                 .map { asyncValidationErrors in
@@ -66,12 +66,14 @@ public struct Field {
     /// - Parameters:
     ///   - context: The context to respect when validating.
     ///   - worker: A `Worker` to perform the async validation on.
+    ///   - submittable: An optional existing related submittable for reference when validating.
     /// - Returns: An array of `ValidationError`s in the `Future`.
     /// - Throws: Any non-validation related error
     public func validate(
         inContext context: ValidationContext,
-        on req: Request
+        on req: Request,
+        with submittable: S? = nil
     ) throws -> Future<[ValidationError]> {
-        return try _validate(context, req)
+        return try _validate(context, req, submittable)
     }
 }
