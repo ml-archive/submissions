@@ -34,6 +34,8 @@ targets: [
 
 Next, copy/paste the `Resources/Views/Submissions` folder into your project in order to be able to use the provided Leaf tags. These files can be changed as explained in the [Leaf Tags](#leaf-tags) section, however it's recommended to copy this folder to your project anyway. This makes it easier for you to keep track of updates and your project will work if you decide later on to not use your own customized leaf files.
 
+> Right now the provided Leaf templates are depending on the [Bootstrap package](https://github.com/nodes-vapor/bootstrap). This will change in the future. For the moment, the consumer of this package will need to include Bootstrap and adapt the provided leaf files or replace them entirely.
+
 ## Introduction
 
 Submissions was written to minimize the amount of boilerplate needed to write the common tasks of rendering forms and processing and validating data from POST and PATCH requests. Submissions makes it easy to present detailed validation errors for web users as well as API consumers.
