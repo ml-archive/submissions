@@ -16,6 +16,11 @@ public protocol Submittable: Decodable {
     mutating func update(_ update: Submission) throws
 }
 
+extension Submittable {
+    /// Default implementation for `update` that does nothing.
+    public mutating func update(_: Submission) throws {}
+}
+
 extension Future where T: SubmissionType {
     /// Creates a new submittable value based on the submission payload after it is validated.
     ///
