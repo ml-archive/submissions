@@ -9,7 +9,7 @@ public final class SubmissionsProvider: Provider {
     public init(config: SubmissionsConfig = .default) {
         self.config = config
     }
-    
+
     /// See `Provider`
     public func register(_ services: inout Services) throws {
         services.register(config)
@@ -25,6 +25,9 @@ public final class SubmissionsProvider: Provider {
 extension SubmissionsProvider {
     /// The Submission related tags.
     public static var tags: [String: TagRenderer] {
-        return ["submissions:input": InputTag()]
+        return [
+            "submissions:input": InputTag(),
+            "submissions:textarea": TextAreaTag(),
+        ]
     }
 }
