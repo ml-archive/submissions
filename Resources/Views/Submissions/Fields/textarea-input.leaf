@@ -4,9 +4,7 @@
     }
 
 
-    <textarea class="form-control #if(hasErrors) { is-invalid }" id='#(key)' name='#(key)' cols="" rows="6" #if(placeholder) { placeholder='#(placeholder)' }>
-        #if(value) { #(value) }
-    </textarea>
+    <textarea class="form-control #if(hasErrors) { is-invalid }" id='#(key)' name='#(key)' cols="" rows="6" #if(placeholder) { placeholder='#(placeholder)' }>#if(value) { #(value) }</textarea>
 
     #if(helpText) {
         <small id="#(key)Help" class="form-text text-muted">#(helpText)</small>
