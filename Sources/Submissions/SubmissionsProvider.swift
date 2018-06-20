@@ -20,7 +20,7 @@ public final class SubmissionsProvider: Provider {
 
     /// See `Provider`
     public func didBoot(_ container: Container) throws -> Future<Void> {
-        let tags = try container.make(MutableLeafTagConfig.self)
+        let tags: MutableLeafTagConfig = try container.make()
         let paths = config.tagTemplatePaths
         tags.use([
             "submissions:input": InputTag(),
