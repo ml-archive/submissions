@@ -210,7 +210,7 @@ api.patch("todos", Todo.parameter, use: apiTodoController.update)
 When building your HTML form using Leaf you can add inputs for your model's fields like so:
 
 ```
-#submissions:input("title", "text", "Enter title", "Please enter a title")
+#submissions:text("title", "Enter title", "Please enter a title")
 ```
 
 This will render a form group with an input and any errors stored in the field cache for the "title" field. This produces the following Bootstrap 4 style HTML (with in this case a validation error):
@@ -224,7 +224,7 @@ This will render a form group with an input and any errors stored in the field c
 </div>
 ```
 
-> Note: Currently only "input" with variants for email, password and text is supported.
+> Note: Currently only "text", "email" and "pasword" is supported.
 
 Before we can use the tag we have to register it in `configure.swift`. We'll use a helper function from the [`Sugar`](https://github.com/nodes-vapor/sugar/tree/vapor-3) package. 
 
