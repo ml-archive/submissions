@@ -24,7 +24,6 @@ public final class SubmissionsProvider: Provider {
         let tags: MutableLeafTagConfig = try container.make()
         let paths = config.tagTemplatePaths
         tags.use([
-            "submissions:input": InputTag(),
             "submissions:email": InputTag(templatePath: paths.emailField),
             "submissions:password": InputTag(templatePath: paths.passwordField),
             "submissions:text": InputTag(templatePath: paths.textField)

@@ -25,21 +25,6 @@ public final class InputTag: TagRenderer {
         }
     }
 
-    public init() {
-        c = { tag, inputData in
-            let body = try tag.requireBody()
-
-            return tag.serializer.serialize(ast: body)
-                .flatMap { view in
-                    try tag
-                        .container
-                        .make(TemplateRenderer.self)
-                        .render(template: view.data, inputData)
-                }
-                .map { .data($0.data) }
-        }
-    }
-
     public func render(tag: TagContext) throws -> Future<TemplateData> {
         let data = try tag.submissionsData()
 
