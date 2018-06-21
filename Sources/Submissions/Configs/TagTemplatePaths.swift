@@ -1,30 +1,30 @@
 /// Configuration for template paths used when rendering tags.
 public struct TagTemplatePaths {
-    /// Path to template for input of type "text"
-    public let textField: String
-    /// Path to template for input of type "email"
+    /// Path to template for input element of type "email"
     public let emailField: String
-    /// Path to template for input of type "password"
+    /// Path to to template for input element of type "password"
     public let passwordField: String
-    /// Path to template for textarea
+    /// Path to template for textarea element
     public let textareaField: String
+    /// Path to template for input element of type "text"
+    public let textField: String
 
     /// Create a new TagTemplatePaths configuration value.
     ///
     /// - Parameters:
-    ///   - textField: path to template for input of type "text"
-    ///   - emailField: path to template for input of type "email"
-    ///   - passwordField: path to template for input of type "password"
-    ///   - textareaField: path to template for textarea
+    ///   - emailField: path to template for input element of type "email"
+    ///   - passwordField: path to template for input element of type "password"
+    ///   - textareaField: path to template for textarea element
+    ///   - textField: path to template for input element of type "text"
     public init(
-        textField: String = "Submissions/Fields/text-input",
         emailField: String = "Submissions/Fields/email-input",
         passwordField: String = "Submissions/Fields/password-input",
-        textareaField: String = "Submissions/Fields/textarea-input"
+        textareaField: String = "Submissions/Fields/textarea-input",
+        textField: String = "Submissions/Fields/text-input"
     ) {
-        self.textField = textField
         self.emailField = emailField
         self.passwordField = passwordField
         self.textareaField = textareaField
+        self.textField = textField
     }
 }
