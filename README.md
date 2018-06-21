@@ -42,7 +42,7 @@ Submissions was written to minimize the amount of boilerplate needed to write th
 
 ## Getting started 🚀
 
-First make sure that you've imported Submissions everywhere when needed:
+First make sure that you've imported Submissions everywhere it's needed:
 
 ```swift
 import Submissions
