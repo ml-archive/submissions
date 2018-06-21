@@ -14,6 +14,7 @@ public final class SubmissionsProvider: Provider {
     
     /// See `Provider`
     public func register(_ services: inout Services) throws {
+        try services.register(MutableLeafTagConfigProvider())
         services.register(config)
         services.register { _ in FieldCache() }
     }
