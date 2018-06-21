@@ -1,4 +1,6 @@
+import Leaf
 import Service
+import Sugar
 import Vapor
 
 /// A provider that registers a FieldCache.
@@ -12,22 +14,22 @@ public final class SubmissionsProvider: Provider {
 
     /// See `Provider`
     public func register(_ services: inout Services) throws {
+        try services.register(MutableLeafTagConfigProvider())
         services.register(config)
         services.register { _ in FieldCache() }
     }
 
     /// See `Provider`
     public func didBoot(_ container: Container) throws -> Future<Void> {
-        return .done(on: container)
-    }
-}
+        let tags: MutableLeafTagConfig = try container.make()
+        let paths = config.tagTemplatePaths
+        tags.use([
+            "submissions:email": InputTag(templatePath: paths.emailField),
+            "submissions:password": InputTag(templatePath: paths.passwordField),
+            "submissions:text": InputTag(templatePath: paths.textField),
+            "submissions:textarea": InputTag(templatePath: paths.textareaField)
+        ])
 
-extension SubmissionsProvider {
-    /// The Submission related tags.
-    public static var tags: [String: TagRenderer] {
-        return [
-            "submissions:input": InputTag(),
-            "submissions:textarea": TextAreaTag(),
-        ]
+        return .done(on: container)
     }
 }
