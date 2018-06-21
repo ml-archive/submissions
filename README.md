@@ -42,7 +42,13 @@ Submissions was written to minimize the amount of boilerplate needed to write th
 
 ## Getting started 🚀
 
-## Adding the Provider
+First make sure that you've imported Submissions everywhere when needed:
+
+```swift
+import Submissions
+```
+
+### Adding the Provider
 
 "Submissions" comes with a light-weight provider that we'll need to register in the `configure` function in our `configure.swift` file:
 
@@ -52,7 +58,37 @@ try services.register(SubmissionsProvider())
 
 This makes sure that fields and errors can be stored on the request using a `FieldCache` service.
 
-### Making a Submittable model
+### Adding the Leaf tag
+
+#### Using a shared Leaf tag config
+
+This package supports using a shared Leaf tag config which removes the task of registering the tags from the consumer of this package. Please see [this description](https://github.com/nodes-vapor/sugar#mutable-leaf-tag-config) if you want to use this.
+
+#### Manually registering the Leaf tag(s)
+
+```swift
+public func configure(_ config: inout Config, _ env: inout Environment, _ services: inout Services) throws {
+    let provider = SubmissionsProvider()
+    services.register(SubmissionsProvider())
+    let paths = provider.config.tagTemplatePaths
+
+    services.register { _ -> LeafTagConfig in
+        var tags = LeafTagConfig.default()
+        tags.use([
+            "submissions:email": InputTag(templatePath: paths.emailField),
+            "submissions:password": InputTag(templatePath: paths.passwordField),
+            "submissions:text": InputTag(templatePath: paths.textField),
+            "submissions:textarea": InputTag(templatePath: paths.textareaField)
+        ])
+
+        return tags
+    }
+}
+```
+
+If you want to fully customize the way the input groups are being generated, you are free to override the Leaf paths for the input group when setting up the provider by supplying your own `SubmissionsConfig`.
+
+## Making a Submittable model
 
 Let's take a simple Todo class as an example.
 
@@ -203,9 +239,9 @@ and register it as a PATCH request in `routes.swift`:
 api.patch("todos", Todo.parameter, use: apiTodoController.update)
 ```
 
-### Validating HTML form requests
+## Validating HTML form requests
 
-#### Leaf Tags
+### Leaf Tags
 
 When building your HTML form using Leaf you can add inputs for your model's fields like so:
 
@@ -226,29 +262,7 @@ This will render a form group with an input and any errors stored in the field c
 
 > Note: Currently only "text", "email", "pasword" and "textarea" is supported.
 
-Before we can use the tag we have to register it in `configure.swift`. We'll use a helper function from the [`Sugar`](https://github.com/nodes-vapor/sugar/tree/vapor-3) package. 
-
-```swift
-// in configure.swift
-...
-import Sugar
-...
-
-// in func configure
-...
-
-    services.register { _ -> LeafTagConfig in
-        var tags = LeafTagConfig.default()
-        tags.use(SubmissionsProvider.tags)
-        return tags
-    }
-
-...
-```
-
-If you want to fully customize the way the input groups are being generated, you are free to override the Leaf paths for the input group when setting up the provider by supplying your own `SubmissionsConfig`.
-
-#### Rendering the forms
+### Rendering the forms
 
 Now we'll create a controller for the frontend routes.
 
@@ -300,7 +314,7 @@ In `routes.swift`:
 router.get ("todos", Todo.parameter, "edit", use: frontendTodoController.renderEdit)
 ```
 
-#### Validating and storing the data
+### Validating and storing the data
 
 Creating a new `Todo` is very similar to how we do in the API routes except that now we'll redirect on success and handle the error a bit differently (see below).
 
