@@ -1,15 +1,15 @@
 import Vapor
 
-/// A field with a key
+/// A field with a key.
 public struct FieldEntry<S: Submittable> {
     var key: String
     var field: Field<S>
 
     /// Create a new `FieldEntry`.
     /// - Parameters:
-    ///   - keyPath:
+    ///   - keyPath: Path to the value for the field.
     ///   - field: A field.
-    /// - Throws: When determining the key from the key path fails
+    /// - Throws: When determining the key from the key path fails.
     init<A: Reflectable, B>(keyPath: KeyPath<A, B>, field: Field<S>) throws {
         guard let paths = try A.reflectProperty(forKey: keyPath)?.path, paths.count > 0 else {
             throw SubmissionError.invalidPathForKeyPath

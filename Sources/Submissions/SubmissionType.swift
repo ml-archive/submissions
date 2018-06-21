@@ -19,6 +19,7 @@ extension SubmissionType {
     /// Make a field entry corresponding to a key path.
     ///
     /// - Parameters:
+    ///   - keyPath: Path to the value on the submission type.
     ///   - label: A label describing this field.
     ///   - value: The value for this field.
     ///   - validators: The validators to use when validating the value.
@@ -54,6 +55,7 @@ extension SubmissionType {
     /// Make a field entry corresponding to a key path with an optional value.
     ///
     /// - Parameters:
+    ///   - keyPath: Path to the value on the submission type.
     ///   - label: A label describing this field.
     ///   - value: The value for this field.
     ///   - validators: The validators to use when validating the value.
