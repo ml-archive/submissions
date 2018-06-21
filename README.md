@@ -260,7 +260,7 @@ This will render a form group with an input and any errors stored in the field c
 </div>
 ```
 
-> Note: Currently only "text", "email", "pasword" and "textarea" is supported.
+> Note: Currently only "text", "email", "pasword" and "textarea" are supported.
 
 ### Rendering the forms
 
