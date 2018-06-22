@@ -11,7 +11,7 @@ public final class SubmissionsProvider: Provider {
     public init(config: SubmissionsConfig = .default) {
         self.config = config
     }
-    
+
     /// See `Provider`
     public func register(_ services: inout Services) throws {
         try services.register(MutableLeafTagConfigProvider())
@@ -26,7 +26,8 @@ public final class SubmissionsProvider: Provider {
         tags.use([
             "submissions:email": InputTag(templatePath: paths.emailField),
             "submissions:password": InputTag(templatePath: paths.passwordField),
-            "submissions:text": InputTag(templatePath: paths.textField)
+            "submissions:text": InputTag(templatePath: paths.textField),
+            "submissions:textarea": InputTag(templatePath: paths.textareaField)
         ])
 
         return .done(on: container)
