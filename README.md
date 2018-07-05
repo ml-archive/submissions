@@ -286,13 +286,13 @@ An empty form can be created by populating the fields using the `Submittable` ty
 ```swift
 func renderCreate(req: Request) throws -> Future<View> {
     try req.populateFields(Todo.self)
-    return try req.privateContainer().make(LeafRenderer.self).render("Todo/edit")
+    return try req.privateContainer.make(LeafRenderer.self).render("Todo/edit")
 }
 ```
 
 and in `routes.swift` we'll add:
 ```swift
-router.get ("todos/create", use: frontendTodoController.renderCreate)
+router.get("todos/create", use: frontendTodoController.renderCreate)
 ```
 
 > Note how we're using the `privateContainer` on the `Request` since that is where the field cache is registered. This is done to ensure the field cache does not outlive the request.
@@ -304,14 +304,14 @@ func renderEdit(req: Request) throws -> Future<View> {
     return try req.parameters.next(Todo.self)
         .populateFields(on: req)
         .flatMap { _ in
-            try req.privateContainer().make(LeafRenderer.self).render("Todo/edit")
+            try req.privateContainer.make(LeafRenderer.self).render("Todo/edit")
         }
 }
 ```
 
 In `routes.swift`:
 ```swift
-router.get ("todos", Todo.parameter, "edit", use: frontendTodoController.renderEdit)
+router.get("todos", Todo.parameter, "edit", use: frontendTodoController.renderEdit)
 ```
 
 ### Validating and storing the data
@@ -361,7 +361,7 @@ func handleCreateOrUpdateError(on req: Request) -> (Error) throws -> Future<Resp
             .make(LeafRenderer.self)
             .render("Todo/edit")
             .flatMap { view in
-                view.encode(for: req)
+                try view.encode(for: req)
             }
     }
 }
