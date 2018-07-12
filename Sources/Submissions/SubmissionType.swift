@@ -128,11 +128,11 @@ extension SubmissionType {
             }
             .map { errors in
                 let validationErrors = [String: [ValidationError]](uniqueKeysWithValues: errors)
+                try req.populateFields(
+                    with: fields.mapValues(AnyField.init),
+                    andErrors: validationErrors
+                )
                 if !validationErrors.isEmpty {
-                    try req.populateFields(
-                        with: fields.mapValues(AnyField.init),
-                        andErrors: validationErrors
-                    )
                     throw SubmissionValidationError()
                 }
                 return self
