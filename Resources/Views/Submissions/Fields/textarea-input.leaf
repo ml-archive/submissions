@@ -3,7 +3,7 @@
         <label for="#(key)">#(label)</label>
     }
 
-    <textarea class="form-control #if(hasErrors) { is-invalid }" id='#(key)' name='#(key)' cols="" rows="6" #if(placeholder) { placeholder='#(placeholder)' } #if(isRequired) { required }>#if(value) { #(value) }</textarea>
+    #bs:textArea("form-control #if(hasErrors) { is-invalid }", "id='#(key)' name='#(key)' cols='' rows='6' #if(isRequired) { required } #if(placeholder) { placeholder='#(placeholder)' }", "#(value)")
 
     #if(helpText) {
         <small id="#(key)Help" class="form-text text-muted">#(helpText)</small>
