@@ -27,6 +27,7 @@ public final class SubmissionsProvider: Provider {
             "submissions:email": InputTag(templatePath: paths.emailField),
             "submissions:password": InputTag(templatePath: paths.passwordField),
             "submissions:text": InputTag(templatePath: paths.textField),
+            "submissions:hidden": InputTag(templatePath: paths.hiddenField),
             "submissions:textarea": InputTag(templatePath: paths.textareaField)
         ])
 
