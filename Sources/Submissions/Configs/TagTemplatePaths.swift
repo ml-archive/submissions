@@ -8,6 +8,8 @@ public struct TagTemplatePaths {
     public let textareaField: String
     /// Path to template for input element of type "text"
     public let textField: String
+    /// Path to template for input element of type "file"
+    public let fileField: String
     /// Path to template for input element of type "hidden"
     public let hiddenField: String
 
@@ -23,12 +25,14 @@ public struct TagTemplatePaths {
         passwordField: String = "Submissions/Fields/password-input",
         textareaField: String = "Submissions/Fields/textarea-input",
         textField: String = "Submissions/Fields/text-input",
+        fileField: String = "Submissions/Fields/file-input",
         hiddenField: String = "Submissions/Fields/hidden-input"
     ) {
         self.emailField = emailField
         self.passwordField = passwordField
         self.textareaField = textareaField
         self.textField = textField
+        self.fileField = fileField
         self.hiddenField = hiddenField
     }
 }

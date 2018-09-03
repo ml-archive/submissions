@@ -10,6 +10,8 @@ public final class InputTag: TagRenderer {
         let hasErrors: Bool
         let placeholder: String?
         let helpText: String?
+        let accept: String? // for file input
+        let multiple: String? // for file input
     }
     
     let c: (TagContext, InputData) throws -> Future<TemplateData>
@@ -30,6 +32,8 @@ public final class InputTag: TagRenderer {
 
         let placeholder = tag.parameters[safe: 1]?.string
         let helpText = tag.parameters[safe: 2]?.string
+        let accept = tag.parameters[safe: 3]?.string
+        let multiple = tag.parameters[safe: 4]?.string
 
         let inputData = InputData(
             key: data.key,
@@ -39,7 +43,9 @@ public final class InputTag: TagRenderer {
             errors: data.errors,
             hasErrors: data.hasErrors,
             placeholder: placeholder,
-            helpText: helpText
+            helpText: helpText,
+            accept: accept,
+            multiple: multiple
         )
 
         return try c(tag, inputData)
