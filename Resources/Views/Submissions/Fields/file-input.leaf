@@ -1,3 +1,19 @@
-#set("type") {file}
+<div class="form-group">
+    #if(label) {
+        <label for="#(key)">#(label)</label>
+    }
 
-#embed("Submissions/Fields/input-field")
+    #bs:input("file", "form-control #if(hasErrors) { is-invalid }", "id='#(key)' name='#(key)' #if(value) { value='#(value)' } #if(isRequired) { required } #if(accept) { accept='#(accept)' } #if(multiple) { multiple='#(multiple)' }")
+
+    #if(helpText) {
+        <small id="#(key)Help" class="form-text text-muted">#(helpText)</small>
+    }
+
+    #if(hasErrors) {
+        <div class='invalid-feedback'>
+            #for(error in errors) {
+                <div>#(error)</div>
+            }
+        </div>
+    }
+</div>
