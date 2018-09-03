@@ -1,3 +1,5 @@
+import Vapor
+
 /// Determine which values count as an absent value besides `nil`.
 /// This can be useful to when dealing with empty strings or "null".
 public enum AbsentValueStrategy {
@@ -14,6 +16,8 @@ public enum AbsentValueStrategy {
 extension AbsentValueStrategy {
     func valueIfPresent<T: CustomStringConvertible>(_ value: T?) -> T? {
         switch (self, value) {
+        case (.nil, let file as File):
+            return file.data.isEmpty ? nil : value
         case (.nil, _):
             return value
         case (.equal(let other), .some(let value)) where value.description != other:
