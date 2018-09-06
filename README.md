@@ -297,7 +297,7 @@ router.get("todos/create", use: frontendTodoController.renderCreate)
 
 > Note how we're using the `privateContainer` on the `Request` since that is where the field cache is registered. This is done to ensure the field cache does not outlive the request.
 
-In order to populate the field with the values of an existing entity we need to first load our entity and put its values in the field cache like so.
+In order to populate the fields with the values of an existing entity we need to first load our entity and put its values in the field cache like so.
 
 ```swift
 func renderEdit(req: Request) throws -> Future<View> {
@@ -313,6 +313,13 @@ In `routes.swift`:
 ```swift
 router.get("todos", Todo.parameter, "edit", use: frontendTodoController.renderEdit)
 ```
+
+> It is also possible to populate the fields for the form directly using an (optional) instance:
+>```swift
+>let todo: Todo? = ... // e.g. from a database query
+>req.populateFields(todo)
+>```
+>If the value is `nil` it will have the same effect as calling `req.populateFields(Todo.self)`.
 
 ### Validating and storing the data
 

@@ -42,12 +42,24 @@ extension Request {
         return try privateContainer.make()
     }
 
-    /// Sets any fields on the field cache of this `Container` for an empty `Submission` value.
+    /// Sets any fields on the field cache of this `Container` for the provided submittable.
     ///
-    /// - Parameter submittable: The type for which to create the fields.
+    /// - Parameter submittable: an optional submittable value containing the values to set.
     /// - Throws: When no `FieldCache` has been registered with this container.
-    public func populateFields<T: Submittable>(_ submittable: T.Type) throws {
-        try populateFields(with: T.Submission(nil).makeFields().mapValues(AnyField.init))
+    public func populateFields<T: Submittable>(_ submittable: T?) throws {
+        try _populateFields(submittable)
+    }
+
+    /// Sets any fields on the field cache of this `Container` for an empty `Submittable`.
+    ///
+    /// - Parameter _: The type for which to create the fields.
+    /// - Throws: When no `FieldCache` has been registered with this container.
+    public func populateFields<T: Submittable>(_: T.Type) throws {
+        try _populateFields(Optional<T>.none)
+    }
+
+    private func _populateFields<T: Submittable>(_ submittable: T?) throws {
+        try populateFields(with: T.Submission(submittable).makeFields().mapValues(AnyField.init))
     }
 
     /// Sets any fields and errors on the field cache of this `Container`.
