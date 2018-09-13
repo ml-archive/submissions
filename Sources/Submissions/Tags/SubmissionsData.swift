@@ -17,7 +17,7 @@ public extension TagContext {
     /// - Returns: The submission data related to the given field.
     /// - Throws: When the name of the field is missing.
     public func submissionsData() throws -> SubmissionsData {
-        let fieldCache = try container.make(FieldCache.self)
+        let fieldCache = try requireRequest().privateContainer.make(FieldCache.self)
 
         guard let key = parameters[safe: 0]?.string else {
             throw error(reason: "Invalid parameter type.")

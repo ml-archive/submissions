@@ -19,21 +19,3 @@ public struct FieldEntry<S: Submittable> {
         self.field = field
     }
 }
-
-enum SubmissionError: Error {
-    case invalidPathForKeyPath
-}
-
-extension SubmissionError: AbortError {
-    var identifier: String {
-        return "invalidPathForKeyPath"
-    }
-
-    var reason: String {
-        return "Invalid Path for KeyPath"
-    }
-
-    var status: HTTPResponseStatus {
-        return .internalServerError
-    }
-}

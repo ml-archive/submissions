@@ -11,18 +11,23 @@ public final class InputTag: TagRenderer {
         let placeholder: String?
         let helpText: String?
     }
-    
-    let c: (TagContext, InputData) throws -> Future<TemplateData>
 
-    public init(templatePath: String) {
-        c = { tag, inputData in
-            try tag.requireNoBody()
-            return try tag
+    public convenience init(templatePath: String) {
+        self.init { tagContext, inputData in
+            try tagContext.requireNoBody()
+            return try tagContext
                 .container
                 .make(TemplateRenderer.self)
                 .render(templatePath, inputData)
                 .map { .data($0.data) }
         }
+    }
+
+    typealias Render = (TagContext, InputData) throws -> Future<TemplateData>
+    let render: Render
+
+    init(render: @escaping Render) {
+        self.render = render
     }
 
     public func render(tag: TagContext) throws -> Future<TemplateData> {
@@ -42,6 +47,42 @@ public final class InputTag: TagRenderer {
             helpText: helpText
         )
 
-        return try c(tag, inputData)
+        return try render(tag, inputData)
     }
 }
+
+// MARK: Move me
+
+import Vapor
+
+extension ViewRenderer {
+    public func render<E>(_ path: String, _ context: E, userInfo: [AnyHashable: Any] = [:], on req: Request) -> Future<View> where E: Encodable {
+        var userInfo = userInfo
+        userInfo[requestUserInfoKey] = req
+        return render(path, context, userInfo: userInfo)
+    }
+
+    public func render(_ path: String, userInfo: [AnyHashable: Any] = [:], on req: Request) -> Future<View> {
+        return render(path, Dictionary<String, String>(), userInfo: userInfo, on: req)
+    }
+}
+
+extension TagContext {
+    public var request: Request? {
+        get {
+            return context.userInfo[requestUserInfoKey] as? Request
+        }
+        set {
+            context.userInfo[requestUserInfoKey] = newValue
+        }
+    }
+
+    public func requireRequest() throws -> Request {
+        guard let request = request else {
+            throw SubmissionError.requestNotPassedIntoRender
+        }
+        return request
+    }
+}
+
+private let requestUserInfoKey = "_submissions:request"
