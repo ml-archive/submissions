@@ -8,8 +8,8 @@ public extension TagContext {
         let value: String?
         let label: String?
         let isRequired: Bool
-        let errors: [String]
-        let hasErrors: Bool
+        let errors: Future<[String]>?
+//        let hasErrors: Bool
     }
 
     /// Pulls out any relevant submissions data for the given field using the `FieldCache`.
@@ -31,8 +31,8 @@ public extension TagContext {
             value: field?.value,
             label: field?.label,
             isRequired: field?.isRequired ?? false,
-            errors: errors,
-            hasErrors: errors.count > 0
+            errors: errors//,
+//            hasErrors: errors.count > 0
         )
     }
 }

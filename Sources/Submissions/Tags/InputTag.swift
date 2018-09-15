@@ -12,8 +12,8 @@ public final class InputTag: TagRenderer {
         let helpText: String?
     }
 
-    public convenience init(templatePath: String) {
-        self.init { tagContext, inputData in
+    public init(templatePath: String) {
+        render = { tagContext, inputData in
             try tagContext.requireNoBody()
             return try tagContext
                 .container
@@ -23,12 +23,7 @@ public final class InputTag: TagRenderer {
         }
     }
 
-    typealias Render = (TagContext, InputData) throws -> Future<TemplateData>
-    let render: Render
-
-    init(render: @escaping Render) {
-        self.render = render
-    }
+    let render: (TagContext, InputData) throws -> Future<TemplateData>
 
     public func render(tag: TagContext) throws -> Future<TemplateData> {
         let data = try tag.submissionsData()
@@ -36,18 +31,20 @@ public final class InputTag: TagRenderer {
         let placeholder = tag.parameters[safe: 1]?.string
         let helpText = tag.parameters[safe: 2]?.string
 
-        let inputData = InputData(
-            key: data.key,
-            value: data.value,
-            label: data.label,
-            isRequired: data.isRequired,
-            errors: data.errors,
-            hasErrors: data.hasErrors,
-            placeholder: placeholder,
-            helpText: helpText
-        )
-
-        return try render(tag, inputData)
+        let e = (data.errors ?? tag.future([]))
+        return e.flatMap { (errors: [String]) -> Future<TemplateData> in
+            let inputData = InputData(
+                key: data.key,
+                value: data.value,
+                label: data.label,
+                isRequired: data.isRequired,
+                errors: errors,
+                hasErrors: !errors.isEmpty,
+                placeholder: placeholder,
+                helpText: helpText
+            )
+            return try self.render(tag, inputData)
+        }
     }
 }
 
