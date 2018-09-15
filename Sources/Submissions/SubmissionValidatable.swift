@@ -22,6 +22,25 @@ extension SubmissionValidatable {
     public func populateFieldCache(on req: Request) throws {
         try Self.populateFieldCache(on: req, withValuesFrom: self)
     }
+
+    public func validate(
+        on req: Request
+    ) throws -> Future<Either<Self, SubmissionValidationError>> {
+        try populateFieldCache(on: req)
+        let fieldCache = try req.fieldCache()
+        return fieldCache
+            .errors
+            .values
+            .flatten(on: req)
+            .map { $0.flatMap { $0 } }
+            .map { errors in
+                if errors.isEmpty {
+                    return .left(self)
+                } else {
+                    return .right(SubmissionValidationError.invalid)
+                }
+            }
+    }
 }
 
 extension SubmissionValidatable where Self: Reflectable {

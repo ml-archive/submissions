@@ -1,8 +1,8 @@
-import Core
 import Submissions
 import Validation
+import Vapor
 
-struct User: Decodable, Reflectable {
+struct User: Content, Equatable, Reflectable {
     let name: String
     let requiredButOptional: Int?
     let emptyStringMeansAbsent: String
@@ -10,12 +10,12 @@ struct User: Decodable, Reflectable {
 
     init(
         name: String = "",
-        optional: Int? = nil,
+        requiredButOptional: Int? = nil,
         emptyStringMeansAbsent: String = "",
         unique: String = "unique"
     ) {
         self.name = name
-        self.requiredButOptional = optional
+        self.requiredButOptional = requiredButOptional
         self.emptyStringMeansAbsent = emptyStringMeansAbsent
         self.unique = unique
     }
@@ -41,7 +41,10 @@ extension User: SubmissionValidatable {
             validatable.makeField(
                 keyPath: \.unique,
                 asyncValidators: [{ req in
-                    req.future([BasicValidationError("must be unique")])
+                    guard validatable?.unique != "unique" else {
+                        return req.future([BasicValidationError("must be unique")])
+                    }
+                    return req.future([])
                 }]
             )
         ]

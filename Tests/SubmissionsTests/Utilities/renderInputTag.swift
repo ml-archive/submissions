@@ -9,14 +9,7 @@ func renderInputTag(
     helpText: String? = nil,
     modifyRequest: (Request) throws -> Void = { _ in }
 ) throws -> (String, TagContextData) {
-    var services = Services()
-    try services.register(SubmissionsProvider())
-    services.register(TemplateRenderer.self) { container in
-        MockTemplateRenderer(container: container)
-    }
-    let app = try Application(environment: .testing, services: services)
-    let req = Request(using: app)
-
+    let req = try Request.test()
     try modifyRequest(req)
 
     let inputTag = InputTag(templatePath: templatePath)

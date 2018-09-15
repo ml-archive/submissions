@@ -110,15 +110,52 @@ final class SubmissionsTests: XCTestCase {
         )
     }
 
-    func testValidationFromAPI() {
+    func testFailedValidationAPIResponse() throws {
+        let req = try Request.test()
+        let response = try User(name: "Valid")
+            .validate(on: req)
+            .encode(for: req)
+            .wait()
 
+        XCTAssertEqual(response.http.status, .unprocessableEntity)
+        guard let data = response.http.body.data else {
+            XCTFail("No data in response body")
+            return
+        }
+        let errorResponse = try JSONDecoder().decode(ErrorResponse.self, from: data)
+        XCTAssertEqual(
+            errorResponse,
+            ErrorResponse(
+                error: true,
+                reason: "One or more fields failed to pass validation.",
+                validationErrors: [
+                    "requiredButOptional": ["data is absent"],
+                    "emptyStringMeansAbsent": ["data is absent"],
+                    "unique": ["data must be unique"]
+                ]
+            )
+        )
     }
 
-    func testSuccessfulValidationAPIResponse() {
+    func testSuccessfulValidationAPIResponse() throws {
+        let req = try Request.test()
+        let user = User(
+            name: "Valid",
+            requiredButOptional: 0,
+            emptyStringMeansAbsent: "nonempty",
+            unique: "different"
+        )
+        let response = try user
+            .validate(on: req)
+            .encode(for: req)
+            .wait()
 
-    }
-
-    func testFailedValidationAPIResponse() {
-
+        XCTAssertEqual(response.http.status, .ok)
+        guard let data = response.http.body.data else {
+            XCTFail("No data in response body")
+            return
+        }
+        let userResponse = try JSONDecoder().decode(User.self, from: data)
+        XCTAssertEqual(userResponse, user)
     }
 }
