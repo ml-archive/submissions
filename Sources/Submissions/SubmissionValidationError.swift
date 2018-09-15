@@ -1,12 +1,12 @@
-//import Validation
 import Vapor
-//
-///// An error signaling that Submission failed. All info about the error is stored in the FieldCache.
+
+/// An error signaling that Submission failed. All info about the error is stored in the FieldCache.
 public enum SubmissionValidationError: Error, Equatable {
     case invalid
 }
 
 private struct ErrorResponse: Encodable {
+
     /// Always set `error` to `true` in response.
     let error = true
 
@@ -18,6 +18,7 @@ private struct ErrorResponse: Encodable {
 }
 
 extension SubmissionValidationError: ResponseEncodable {
+
     /// See `ResponseEncodable`
     public func encode(for req: Request) throws -> Future<Response> {
         return try req.fieldCache().errors

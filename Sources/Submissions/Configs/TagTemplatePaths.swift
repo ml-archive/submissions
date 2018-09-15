@@ -1,5 +1,6 @@
 /// Configuration for template paths used when rendering tags.
 public struct TagTemplatePaths {
+
     /// Path to template for input element of type "email"
     public let emailField: String
     /// Path to to template for input element of type "password"

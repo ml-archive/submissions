@@ -1,5 +1,6 @@
 import TemplateKit
 
+/// A tag that renders a template file corresponding to a validatable form input element.
 public final class InputTag: TagRenderer {
     struct InputData: Encodable {
         let key: String
@@ -12,6 +13,9 @@ public final class InputTag: TagRenderer {
         let helpText: String?
     }
 
+    /// Create a new `InputTag`.
+    ///
+    /// - Parameter templatePath: path to the template file to render
     public init(templatePath: String) {
         render = { tagContext, inputData in
             try tagContext.requireNoBody()
@@ -25,6 +29,7 @@ public final class InputTag: TagRenderer {
 
     let render: (TagContext, InputData) throws -> Future<TemplateData>
 
+    /// See `TagRenderer`.
     public func render(tag: TagContext) throws -> Future<TemplateData> {
         let data = try tag.submissionsData()
 
@@ -47,39 +52,3 @@ public final class InputTag: TagRenderer {
         }
     }
 }
-
-// MARK: Move me
-
-import Vapor
-
-extension ViewRenderer {
-    public func render<E>(_ path: String, _ context: E, userInfo: [AnyHashable: Any] = [:], on req: Request) -> Future<View> where E: Encodable {
-        var userInfo = userInfo
-        userInfo[requestUserInfoKey] = req
-        return render(path, context, userInfo: userInfo)
-    }
-
-    public func render(_ path: String, userInfo: [AnyHashable: Any] = [:], on req: Request) -> Future<View> {
-        return render(path, Dictionary<String, String>(), userInfo: userInfo, on: req)
-    }
-}
-
-extension TagContext {
-    public var request: Request? {
-        get {
-            return context.userInfo[requestUserInfoKey] as? Request
-        }
-        set {
-            context.userInfo[requestUserInfoKey] = newValue
-        }
-    }
-
-    public func requireRequest() throws -> Request {
-        guard let request = request else {
-            throw SubmissionError.requestNotPassedIntoRender
-        }
-        return request
-    }
-}
-
-private let requestUserInfoKey = "_submissions:request"

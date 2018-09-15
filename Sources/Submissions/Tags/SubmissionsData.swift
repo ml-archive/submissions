@@ -1,6 +1,7 @@
 import TemplateKit
 
 public extension TagContext {
+
     /// Encapsulates relevant submissions data that can be used for validation output.
     /// For example when rendering the form.
     public struct SubmissionsData: Encodable {
@@ -9,7 +10,6 @@ public extension TagContext {
         let label: String?
         let isRequired: Bool
         let errors: Future<[String]>?
-//        let hasErrors: Bool
     }
 
     /// Pulls out any relevant submissions data for the given field using the `FieldCache`.
@@ -31,8 +31,7 @@ public extension TagContext {
             value: field?.value,
             label: field?.label,
             isRequired: field?.isRequired ?? false,
-            errors: errors//,
-//            hasErrors: errors.count > 0
+            errors: errors
         )
     }
 }

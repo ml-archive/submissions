@@ -2,6 +2,7 @@ import Service
 
 /// Configuration for Submissions
 public struct SubmissionsConfig: Service {
+
     /// Configuration for template paths used when rendering tags.
     public let tagTemplatePaths: TagTemplatePaths
 
