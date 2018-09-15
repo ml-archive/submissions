@@ -1,4 +1,5 @@
 import Submissions
+import Sugar
 import Vapor
 import XCTest
 
