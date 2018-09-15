@@ -3,7 +3,7 @@ import Vapor
 
 /// A `FieldCache` contains the data used by `Tag`s to produce the fields in html forms.
 public final class FieldCache: Service {
-    var fields: [String: AnyField] = [:]
+    var fields: [String: Field] = [:]
     var errors: [String: Future<[String]>] = [:]
 }
 
@@ -23,7 +23,7 @@ extension FieldCache {
     /// Returns the value for a field.
     ///
     /// - Parameter key: The identifier of the field.
-    public subscript(valueFor key: String) -> AnyField? {
+    public subscript(valueFor key: String) -> Field? {
         get {
             return fields[key]
         }

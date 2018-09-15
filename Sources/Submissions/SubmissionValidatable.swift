@@ -1,7 +1,7 @@
 import Vapor
 
 public protocol SubmissionValidatable {
-    static func makeFields(for validatable: Self?) throws -> [Field<Self>]
+    static func makeFields(for validatable: Self?) throws -> [Field]
 }
 
 extension SubmissionValidatable {
@@ -13,8 +13,8 @@ extension SubmissionValidatable {
         let fields = try makeFields(for: instance)
         fields.forEach { field in
             let key = field.key
-            fieldCache[valueFor: key] = AnyField(field)
-            let errors = field.validate(req, instance)
+            fieldCache[valueFor: key] = field
+            let errors = field.validate(req)
             fieldCache[errorsFor: key] = errors.map { $0.map { $0.reason } }
         }
     }
@@ -39,11 +39,11 @@ extension Optional where Wrapped: SubmissionValidatable & Reflectable {
         keyPath: KeyPath<Wrapped, T>,
         label: String? = nil,
         validators: [Validator<T>] = [],
-        asyncValidators: [Field<Wrapped>.Validate] = [],
+        asyncValidators: [Field.Validate] = [],
         isRequired: Bool = false,
         errorOnAbsense: ValidationError = BasicValidationError("is absent"),
         absentValueStrategy: AbsentValueStrategy<T> = .nil
-    ) throws -> Field<Wrapped> {
+    ) throws -> Field {
         return try Field(
             key: Wrapped.key(for: keyPath),
             label: label,
@@ -61,11 +61,11 @@ extension Optional where Wrapped: SubmissionValidatable & Reflectable {
         keyPath: KeyPath<Wrapped, T?>,
         label: String? = nil,
         validators: [Validator<T>] = [],
-        asyncValidators: [Field<Wrapped>.Validate] = [],
+        asyncValidators: [Field.Validate] = [],
         isRequired: Bool = false,
         errorOnAbsense: ValidationError = BasicValidationError("is absent"),
         absentValueStrategy: AbsentValueStrategy<T> = .nil
-    ) throws -> Field<Wrapped> {
+    ) throws -> Field {
         return try Field(
             key: Wrapped.key(for: keyPath),
             label: label,

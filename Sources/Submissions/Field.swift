@@ -78,7 +78,7 @@ import Vapor
 //    }
 //}
 
-public struct Field<S> {
+public struct Field {
 
     /// The key that references this field.
     let key: String
@@ -94,7 +94,7 @@ public struct Field<S> {
 
     let validate: Validate
 
-    public typealias Validate = (Request, S?) -> Future<[ValidationError]>
+    public typealias Validate = (Request) -> Future<[ValidationError]>
 
     public init<T: CustomStringConvertible, V: SubmissionValidatable>(
         key: String,
@@ -112,7 +112,7 @@ public struct Field<S> {
         self.value = value?.description
         self.isRequired = isRequired
 
-        validate = { req, validatable in
+        validate = { req in
             let errors: [ValidationError]
             if let value = value.flatMap(absentValueStrategy.valueIfPresent) {
                 do {
@@ -134,7 +134,7 @@ public struct Field<S> {
             }
 
             return asyncValidators
-                .map { validator in validator(req, validatable) }
+                .map { validator in validator(req) }
                 .flatten(on: req)
                 .map {
                     $0.flatMap { $0 } + errors

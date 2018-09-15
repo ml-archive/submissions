@@ -22,7 +22,7 @@ struct User: Decodable, Reflectable {
 }
 
 extension User: SubmissionValidatable {
-    static func makeFields(for validatable: User?) throws -> [Field<User>] {
+    static func makeFields(for validatable: User?) throws -> [Field] {
         return try [
             validatable.makeField(
                 keyPath: \.name,
@@ -40,7 +40,7 @@ extension User: SubmissionValidatable {
             ),
             validatable.makeField(
                 keyPath: \.unique,
-                asyncValidators: [{ req, _ in
+                asyncValidators: [{ req in
                     req.future([BasicValidationError("must be unique")])
                 }]
             )
