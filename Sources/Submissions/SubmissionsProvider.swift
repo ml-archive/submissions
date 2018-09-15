@@ -1,8 +1,10 @@
 import Sugar
 import Vapor
 
-/// A provider that registers a FieldCache.
+/// A provider that registers tags and a `FieldCache`.
 public final class SubmissionsProvider: Provider {
+
+    /// Submissions configuration
     public let config: SubmissionsConfig
 
     /// Create a new `SubmissionsProvider`.
