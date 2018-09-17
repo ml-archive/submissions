@@ -1,19 +1,8 @@
-#if os(Linux)
-
 import XCTest
-@testable import SubmissionsTests
 
-// sourcery:inline:auto:LinuxMain
+import SubmissionsTests
 
-extension SubmissionsTests {
-    static var allTests = [
-        ("testAPI", testAPI),
-    ]
-}
+var tests = [XCTestCaseEntry]()
+tests += SubmissionsTests.__allTests()
 
-XCTMain([
-    testCase(SubmissionsTests.allTests),
-])
-
-// sourcery:end
-#endif
+XCTMain(tests)
