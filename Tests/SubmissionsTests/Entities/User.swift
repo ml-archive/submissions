@@ -40,7 +40,7 @@ extension User: SubmissionValidatable {
             ),
             validatable.makeField(
                 keyPath: \.unique,
-                asyncValidators: [{ req in
+                asyncValidators: [{ req, _ in
                     guard validatable?.unique != "unique" else {
                         return req.future([BasicValidationError("must be unique")])
                     }

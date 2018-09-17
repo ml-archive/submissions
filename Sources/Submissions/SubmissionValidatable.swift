@@ -16,10 +16,12 @@ extension SubmissionValidatable {
     ///
     /// - Parameters:
     ///   - req: the request
+    ///   - context: the context in which the validation should take place.
     ///   - existingValidatable: the existing validatable value, if any.
     /// - Throws: if the `FieldCache` cannot be created or if `makeFields` throws an error.
     public static func populateFieldCache(
         on req: Request,
+        inContext context: ValidationContext,
         withValuesFrom existingValidatable: Self? = nil
     ) throws {
         let fieldCache = try req.fieldCache()
@@ -27,7 +29,7 @@ extension SubmissionValidatable {
         fields.forEach { field in
             let key = field.key
             fieldCache[valueFor: key] = field
-            let errors = field.validate(req)
+            let errors = field.validate(req, context)
             fieldCache[errorsFor: key] = errors.map { $0.map { $0.reason } }
         }
     }
@@ -36,21 +38,28 @@ extension SubmissionValidatable {
     ///
     /// - Parameters:
     ///   - req: the request
+    ///   - context: the context in which the validation should take place.
     /// - Throws: if the `FieldCache` cannot be created or if `makeFields` throws an error.
-    public func populateFieldCache(on req: Request) throws {
-        try Self.populateFieldCache(on: req, withValuesFrom: self)
+    public func populateFieldCache(
+        on req: Request,
+        inContext context: ValidationContext
+    ) throws {
+        try Self.populateFieldCache(on: req, inContext: context, withValuesFrom: self)
     }
 
     /// Validates the validatable value. This also calls `populateFieldCache`.
     ///
-    /// - Parameter req: the request.
+    /// - Parameters:
+    ///   - req: the request
+    ///   - context: the context in which the validation should take place.
     /// - Returns: A `Future` of `Either` the valid validatable value or a
     ///     `SubmissionValidationError`
     /// - Throws: if the `FieldCache` cannot be created or if `makeFields` throws an error.
     public func validate(
-        on req: Request
+        on req: Request,
+        inContext context: ValidationContext
     ) throws -> Future<Either<Self, SubmissionValidationError>> {
-        try populateFieldCache(on: req)
+        try populateFieldCache(on: req, inContext: context)
         let fieldCache = try req.fieldCache()
         return fieldCache.errors.values
             .flatten(on: req)
@@ -84,7 +93,7 @@ extension Optional where Wrapped: SubmissionValidatable & Reflectable {
     ///   - label: A label describing this field.
     ///   - validators: The validators to use when validating the value.
     ///   - asyncValidators: A closure to perform any additional validation that requires async.
-    ///       Takes a request. See `Field.Validate`.
+    ///       Takes a request. See `Field.AsyncValidate`.
     ///   - isRequired: Whether or not the value is allowed to be absent.
     ///   - errorOnAbsense: The error to be thrown in the `create` context when value is absent as
     ///       determined by `absentValueStrategy` and `isRequired` is `true`.
@@ -93,8 +102,9 @@ extension Optional where Wrapped: SubmissionValidatable & Reflectable {
         keyPath: KeyPath<Wrapped, T>,
         label: String? = nil,
         validators: [Validator<T>] = [],
-        asyncValidators: [Field.Validate] = [],
+        asyncValidators: [Field.AsyncValidate] = [],
         isRequired: Bool = false,
+        requiredStrategy: RequiredStrategy = .onCreateOrUpdate,
         errorOnAbsense: ValidationError = BasicValidationError("is absent"),
         absentValueStrategy: AbsentValueStrategy<T> = .nil
     ) throws -> Field {
@@ -106,6 +116,7 @@ extension Optional where Wrapped: SubmissionValidatable & Reflectable {
             validators: validators,
             asyncValidators: asyncValidators,
             isRequired: isRequired,
+            requiredStrategy: requiredStrategy,
             errorOnAbsense: errorOnAbsense,
             absentValueStrategy: absentValueStrategy
         )
@@ -118,7 +129,7 @@ extension Optional where Wrapped: SubmissionValidatable & Reflectable {
     ///   - label: A label describing this field.
     ///   - validators: The validators to use when validating the value.
     ///   - asyncValidators: A closure to perform any additional validation that requires async.
-    ///       Takes a request. See `Field.Validate`.
+    ///       Takes a request. See `Field.AsyncValidate`.
     ///   - isRequired: Whether or not the value is allowed to be absent.
     ///   - errorOnAbsense: The error to be thrown in the `create` context when value is absent as
     ///       determined by `absentValueStrategy` and `isRequired` is `true`.
@@ -127,8 +138,9 @@ extension Optional where Wrapped: SubmissionValidatable & Reflectable {
         keyPath: KeyPath<Wrapped, T?>,
         label: String? = nil,
         validators: [Validator<T>] = [],
-        asyncValidators: [Field.Validate] = [],
+        asyncValidators: [Field.AsyncValidate] = [],
         isRequired: Bool = false,
+        requiredStrategy: RequiredStrategy = .onCreateOrUpdate,
         errorOnAbsense: ValidationError = BasicValidationError("is absent"),
         absentValueStrategy: AbsentValueStrategy<T> = .nil
     ) throws -> Field {
@@ -140,6 +152,7 @@ extension Optional where Wrapped: SubmissionValidatable & Reflectable {
             validators: validators,
             asyncValidators: asyncValidators,
             isRequired: isRequired,
+            requiredStrategy: requiredStrategy,
             errorOnAbsense: errorOnAbsense,
             absentValueStrategy: absentValueStrategy
         )

@@ -15,10 +15,10 @@ public struct Field {
     /// Whether or not values are allowed to be nil.
     let isRequired: Bool
 
-    let validate: Validate
+    let validate: AsyncValidate
 
     /// Can validate asyncronously.
-    public typealias Validate = (Request) -> Future<[ValidationError]>
+    public typealias AsyncValidate = (Request, ValidationContext) -> Future<[ValidationError]>
 
     init<T: CustomStringConvertible, V: SubmissionValidatable>(
         key: String,
@@ -26,17 +26,18 @@ public struct Field {
         value: T?,
         validatable: V?,
         validators: [Validator<T>],
-        asyncValidators: [Validate],
+        asyncValidators: [AsyncValidate],
         isRequired: Bool,
+        requiredStrategy: RequiredStrategy,
         errorOnAbsense: ValidationError,
         absentValueStrategy: AbsentValueStrategy<T>
-    ) throws {
+    ) {
         self.key = key
         self.label = label
         self.value = value?.description
         self.isRequired = isRequired
 
-        validate = { req in
+        validate = { req, context in
             let errors: [ValidationError]
             if let value = value.flatMap(absentValueStrategy.valueIfPresent) {
                 do {
@@ -51,14 +52,14 @@ public struct Field {
                 } catch {
                     return req.future(error: error)
                 }
-            } else if isRequired {
+            } else if requiredStrategy.isRequired(context) {
                 errors = [errorOnAbsense]
             } else {
                 errors = []
             }
 
             return asyncValidators
-                .map { validator in validator(req) }
+                .map { validator in validator(req, context) }
                 .flatten(on: req)
                 .map {
                     $0.flatMap { $0 } + errors

@@ -3,12 +3,16 @@ public struct TagTemplatePaths {
 
     /// Path to template for input element of type "email"
     public let emailField: String
+
     /// Path to to template for input element of type "password"
     public let passwordField: String
+
     /// Path to template for textarea element
     public let textareaField: String
+
     /// Path to template for input element of type "text"
     public let textField: String
+
     /// Path to template for input element of type "hidden"
     public let hiddenField: String
 
