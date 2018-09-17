@@ -19,7 +19,7 @@ private struct ErrorResponse: Encodable {
 
 extension SubmissionValidationError: ResponseEncodable {
 
-    /// See `ResponseEncodable`
+    /// See `ResponseEncodable`.
     public func encode(for req: Request) throws -> Future<Response> {
         return try req.fieldCache().errors
             .compactMap { key, errors in
