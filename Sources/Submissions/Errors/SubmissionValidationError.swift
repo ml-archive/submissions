@@ -1,6 +1,6 @@
 import Vapor
 
-/// An error signaling that Submission failed. All info about the error is stored in the FieldCache.
+/// An error signaling that validation failed. Info about the error(s) is stored in the FieldCache.
 public enum SubmissionValidationError: Error, Equatable {
     case invalid
 }
@@ -33,7 +33,7 @@ extension SubmissionValidationError: ResponseEncodable {
                     .filter { !$0.value.isEmpty }
 
                 let errorResponse = ErrorResponse(validationErrors: validationErrors)
-                let response = try req.makeResponse(
+                let response = try req.response(
                     http: .init(
                         status: .unprocessableEntity,
                         body: HTTPBody(data: JSONEncoder().encode(errorResponse))

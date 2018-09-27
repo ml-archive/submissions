@@ -1,7 +1,7 @@
-/// A way to determine whether a field is required given a validation context
+/// A way to determine whether a field is required given a validation context.
 public struct RequiredStrategy {
 
-    /// Determines whether a field is required given a validation context
+    /// Determines whether a field is required given a validation context.
     public typealias IsRequired = (ValidationContext) -> Bool
 
     let isRequired: IsRequired

@@ -15,18 +15,17 @@ public struct Field {
     /// Whether or not values are allowed to be nil.
     let isRequired: Bool
 
-    let validate: AsyncValidate
+    let validate: Validate
 
     /// Can validate asyncronously.
-    public typealias AsyncValidate = (Request, ValidationContext) -> Future<[ValidationError]>
+    public typealias Validate = (Request, ValidationContext) -> Future<[ValidationError]>
 
-    init<T: CustomStringConvertible, V: SubmissionValidatable>(
+    public init<T: CustomStringConvertible>(
         key: String,
         label: String?,
         value: T?,
-        validatable: V?,
         validators: [Validator<T>],
-        asyncValidators: [AsyncValidate],
+        asyncValidators: [Validate],
         isRequired: Bool,
         requiredStrategy: RequiredStrategy,
         errorOnAbsense: ValidationError,

@@ -21,8 +21,12 @@ struct User: Content, Equatable, Reflectable {
     }
 }
 
-extension User: SubmissionValidatable {
-    static func makeFields(for validatable: User?) throws -> [Field] {
+extension User {
+    func makeFields() throws -> [Field] {
+        return try User.makeFields(for: self)
+    }
+
+    static func makeFields(for validatable: User? = nil) throws -> [Field] {
         return try [
             validatable.makeField(
                 keyPath: \.name,

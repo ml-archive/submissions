@@ -1,16 +1,6 @@
 import Vapor
 
-/// Types conforming to this protocol can be validated.
-public protocol SubmissionValidatable {
-
-    /// Implement this method to configure how this type should be validated.
-    ///
-    /// - Parameter validatable: the existing value (e.g. from the database), if any.
-    /// - Returns: the `Field`s representing the validations to perform.
-    static func makeFields(for validatable: Self?) throws -> [Field]
-}
-
-extension SubmissionValidatable {
+extension Sequence where Element == Field {
 
     /// Add fields and errors (if any) to the `FieldCache` so they are available to the `InputTag`.
     ///
@@ -19,32 +9,17 @@ extension SubmissionValidatable {
     ///   - context: the context in which the validation should take place.
     ///   - existingValidatable: the existing validatable value, if any.
     /// - Throws: if the `FieldCache` cannot be created or if `makeFields` throws an error.
-    public static func populateFieldCache(
+    public func populateFieldCache(
         on req: Request,
-        inContext context: ValidationContext,
-        withValuesFrom existingValidatable: Self? = nil
+        inContext context: ValidationContext
     ) throws {
         let fieldCache = try req.fieldCache()
-        let fields = try makeFields(for: existingValidatable)
-        fields.forEach { field in
+        forEach { field in
             let key = field.key
             fieldCache[valueFor: key] = field
             let errors = field.validate(req, context)
             fieldCache[errorsFor: key] = errors.map { $0.map { $0.reason } }
         }
-    }
-
-    /// Add fields and errors (if any) to the `FieldCache` so they are available to the `InputTag`.
-    ///
-    /// - Parameters:
-    ///   - req: the request
-    ///   - context: the context in which the validation should take place.
-    /// - Throws: if the `FieldCache` cannot be created or if `makeFields` throws an error.
-    public func populateFieldCache(
-        on req: Request,
-        inContext context: ValidationContext
-    ) throws {
-        try Self.populateFieldCache(on: req, inContext: context, withValuesFrom: self)
     }
 
     /// Validates the validatable value. This also calls `populateFieldCache`.
@@ -58,33 +33,22 @@ extension SubmissionValidatable {
     public func validate(
         on req: Request,
         inContext context: ValidationContext
-    ) throws -> Future<Either<Self, SubmissionValidationError>> {
+    ) throws -> Future<Void> {
         try populateFieldCache(on: req, inContext: context)
         let fieldCache = try req.fieldCache()
         return fieldCache.errors.values
             .flatten(on: req)
             .map { $0.flatMap { $0 } }
             .map { errors in
-                if errors.isEmpty {
-                    return .left(self)
-                } else {
-                    return .right(SubmissionValidationError.invalid)
+                guard errors.isEmpty else {
+                    throw SubmissionValidationError.invalid
                 }
+                return
             }
     }
 }
 
-extension SubmissionValidatable where Self: Reflectable {
-    static func key<T>(for keyPath: KeyPath<Self, T>) throws -> String {
-        guard let paths = try Self.reflectProperty(forKey: keyPath)?.path, paths.count > 0 else {
-            throw SubmissionError.invalidPathForKeyPath
-        }
-
-        return paths.joined(separator: ".")
-    }
-}
-
-extension Optional where Wrapped: SubmissionValidatable & Reflectable {
+extension Optional where Wrapped: Reflectable {
 
     /// Make a field corresponding to a key path.
     ///
@@ -102,7 +66,7 @@ extension Optional where Wrapped: SubmissionValidatable & Reflectable {
         keyPath: KeyPath<Wrapped, T>,
         label: String? = nil,
         validators: [Validator<T>] = [],
-        asyncValidators: [Field.AsyncValidate] = [],
+        asyncValidators: [Field.Validate] = [],
         isRequired: Bool = false,
         requiredStrategy: RequiredStrategy = .onCreateOrUpdate,
         errorOnAbsense: ValidationError = BasicValidationError("is absent"),
@@ -112,7 +76,6 @@ extension Optional where Wrapped: SubmissionValidatable & Reflectable {
             key: Wrapped.key(for: keyPath),
             label: label,
             value: self?[keyPath: keyPath],
-            validatable: self,
             validators: validators,
             asyncValidators: asyncValidators,
             isRequired: isRequired,
@@ -138,7 +101,7 @@ extension Optional where Wrapped: SubmissionValidatable & Reflectable {
         keyPath: KeyPath<Wrapped, T?>,
         label: String? = nil,
         validators: [Validator<T>] = [],
-        asyncValidators: [Field.AsyncValidate] = [],
+        asyncValidators: [Field.Validate] = [],
         isRequired: Bool = false,
         requiredStrategy: RequiredStrategy = .onCreateOrUpdate,
         errorOnAbsense: ValidationError = BasicValidationError("is absent"),
@@ -148,7 +111,6 @@ extension Optional where Wrapped: SubmissionValidatable & Reflectable {
             key: Wrapped.key(for: keyPath),
             label: label,
             value: self?[keyPath: keyPath],
-            validatable: self,
             validators: validators,
             asyncValidators: asyncValidators,
             isRequired: isRequired,
@@ -156,5 +118,15 @@ extension Optional where Wrapped: SubmissionValidatable & Reflectable {
             errorOnAbsense: errorOnAbsense,
             absentValueStrategy: absentValueStrategy
         )
+    }
+}
+
+extension Reflectable {
+    fileprivate static func key<T>(for keyPath: KeyPath<Self, T>) throws -> String {
+        guard let paths = try Self.reflectProperty(forKey: keyPath)?.path, paths.count > 0 else {
+            throw SubmissionError.invalidPathForKeyPath
+        }
+
+        return paths.joined(separator: ".")
     }
 }
