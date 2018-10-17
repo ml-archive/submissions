@@ -1,4 +1,5 @@
 import TemplateKit
+import Sugar
 
 /// A tag that renders a template file corresponding to a validatable form input element.
 public final class InputTag: TagRenderer {

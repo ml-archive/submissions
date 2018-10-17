@@ -8,11 +8,11 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/nodes-vapor/sugar.git", from: "3.0.0-beta"),
-        .package(url: "https://github.com/vapor/template-kit.git", from: "1.1.0"),
+        .package(url: "https://github.com/vapor/leaf.git", from: "3.0.0"),
         .package(url: "https://github.com/vapor/vapor.git", from: "3.1.0")
     ],
     targets: [
-        .target(name: "Submissions", dependencies: ["Sugar", "TemplateKit", "Vapor"]),
+        .target(name: "Submissions", dependencies: ["Leaf", "Sugar", "Vapor"]),
         .testTarget(name: "SubmissionsTests", dependencies: ["Submissions"])
     ]
 )

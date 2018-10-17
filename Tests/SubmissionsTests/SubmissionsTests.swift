@@ -24,7 +24,7 @@ final class SubmissionsTests: XCTestCase {
 
     func testRenderFieldsInFormFromType() throws {
         let (_, tagContextData) = try renderInputTag(key: "name") { req in
-            try User.makeFields().populateFieldCache(on: req, inContext: .new)
+            try req.fieldCache().populate(with: User.makeFields(), inContext: .new, on: req)
         }
 
         XCTAssertEqual(
@@ -35,7 +35,8 @@ final class SubmissionsTests: XCTestCase {
 
     func testRenderFieldsInFormFromInstance() throws {
         let (_, tagContextData) = try renderInputTag(key: "name") { req in
-            try User(name: "Martin").makeFields().populateFieldCache(on: req, inContext: .create)
+            try req.fieldCache()
+                .populate(with: try User(name: "Martin").makeFields(), inContext: .create, on: req)
         }
 
         XCTAssertEqual(
@@ -46,7 +47,8 @@ final class SubmissionsTests: XCTestCase {
 
     func testValidationError() throws {
         let (_, tagContextData) = try renderInputTag(key: "name") { req in
-            try User(name: "M").makeFields().populateFieldCache(on: req, inContext: .create)
+            try req.fieldCache()
+                .populate(with: try User(name: "M").makeFields(), inContext: .create, on: req)
         }
 
         XCTAssertEqual(
@@ -63,7 +65,7 @@ final class SubmissionsTests: XCTestCase {
 
     func testMissingValue() throws {
         let (_, tagContextData) = try renderInputTag(key: "requiredButOptional") { req in
-            try User().makeFields().populateFieldCache(on: req, inContext: .create)
+            try req.fieldCache().populate(with: User.makeFields(), inContext: .create, on: req)
         }
 
         XCTAssertEqual(
@@ -79,7 +81,7 @@ final class SubmissionsTests: XCTestCase {
 
     func testMissingValueDefinedAsEmptyString() throws {
         let (_, tagContextData) = try renderInputTag(key: "emptyStringMeansAbsent") { req in
-            try User().makeFields().populateFieldCache(on: req, inContext: .create)
+            try req.fieldCache().populate(with: User().makeFields(), inContext: .create, on: req)
         }
 
         XCTAssertEqual(
@@ -96,7 +98,7 @@ final class SubmissionsTests: XCTestCase {
 
     func testUniqueValueBySimulatingCallToDatabase() throws {
         let (_, tagContextData) = try renderInputTag(key: "unique") { req in
-            try User().makeFields().populateFieldCache(on: req, inContext: .create)
+            try req.fieldCache().populate(with: User().makeFields(), inContext: .create, on: req)
         }
 
         XCTAssertEqual(
@@ -113,9 +115,11 @@ final class SubmissionsTests: XCTestCase {
     func testFailedValidationAPIResponse() throws {
         let req = try Request.test()
         let user = User(name: "Valid")
-        let response = try user
-            .makeFields()
-            .validate(on: req, inContext: .create)
+
+        let response = try req
+            .fieldCache()
+            .populate(with: user.makeFields(), inContext: .create, on: req)
+            .validate(on: req)
             .transform(to: user)
             .promoteErrors(ofType: SubmissionValidationError.self)
             .encode(for: req)
@@ -149,9 +153,10 @@ final class SubmissionsTests: XCTestCase {
             emptyStringMeansAbsent: "nonempty",
             unique: "different"
         )
-        let response = try user
-            .makeFields()
-            .validate(on: req, inContext: .create)
+        let response = try req
+            .fieldCache()
+            .populate(with: try user.makeFields(), inContext: .create, on: req)
+            .validate(on: req)
             .transform(to: user)
             .encode(for: req)
             .wait()

@@ -13,6 +13,10 @@ extension Request {
         services.register(TemplateRenderer.self) { container in
             MockTemplateRenderer(container: container)
         }
+        let sharedThreadPool = BlockingIOThreadPool(numberOfThreads: 2)
+        sharedThreadPool.start()
+        services.register(sharedThreadPool)
+
         let app = try Application(config: config, environment: .testing, services: services)
         return Request(using: app)
     }
