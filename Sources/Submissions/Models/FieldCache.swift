@@ -85,6 +85,6 @@ extension FieldCache {
                     throw SubmissionValidationError.invalid
                 }
                 return
-        }
+            }
     }
 }
