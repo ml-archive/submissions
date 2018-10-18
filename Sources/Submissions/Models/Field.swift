@@ -12,7 +12,7 @@ public struct Field {
     /// The value for this field represented as a `String`.
     let value: String?
 
-    /// Whether or not values are allowed to be nil.
+    /// Whether or not values are allowed to be absent.
     let isRequired: Bool
 
     let validate: Validate
