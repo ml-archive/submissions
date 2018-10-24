@@ -21,31 +21,31 @@ struct User: Content, Equatable, Reflectable {
     }
 }
 
-extension User {
-    func makeFields() throws -> [Field] {
-        return try User.makeFields(for: self)
-    }
-
-    static func makeFields(for validatable: User? = nil) throws -> [Field] {
+extension User: Submittable {
+    static func makeFields(for user: User? = nil) throws -> [Field] {
         return try [
-            validatable.makeField(
+            Field(
                 keyPath: \.name,
+                instance: user,
                 label: "Name",
                 validators: [.count(2...)]
             ),
-            validatable.makeField(
+            Field(
                 keyPath: \.requiredButOptional,
+                instance: user,
                 isRequired: true
             ),
-            validatable.makeField(
+            Field(
                 keyPath: \.emptyStringMeansAbsent,
+                instance: user,
                 isRequired: true,
                 absentValueStrategy: .equal(to: "")
             ),
-            validatable.makeField(
+            Field(
                 keyPath: \.unique,
+                instance: user,
                 asyncValidators: [{ req, _ in
-                    guard validatable?.unique != "unique" else {
+                    guard user?.unique != "unique" else {
                         return req.future([BasicValidationError("must be unique")])
                     }
                     return req.future([])
