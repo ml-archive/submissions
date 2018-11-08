@@ -78,7 +78,9 @@ public func configure(_ config: inout Config, _ env: inout Environment, _ servic
             "submissions:email": InputTag(templatePath: paths.emailField),
             "submissions:password": InputTag(templatePath: paths.passwordField),
             "submissions:text": InputTag(templatePath: paths.textField),
-            "submissions:textarea": InputTag(templatePath: paths.textareaField)
+            "submissions:hidden": InputTag(templatePath: paths.hiddenField),
+            "submissions:textarea": InputTag(templatePath: paths.textareaField),
+            "submissions:checkbox": InputTag(templatePath: paths.checkboxField)
         ])
 
         return tags

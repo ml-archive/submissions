@@ -28,7 +28,8 @@ public final class SubmissionsProvider: Provider {
             "submissions:password": InputTag(templatePath: paths.passwordField),
             "submissions:text": InputTag(templatePath: paths.textField),
             "submissions:hidden": InputTag(templatePath: paths.hiddenField),
-            "submissions:textarea": InputTag(templatePath: paths.textareaField)
+            "submissions:textarea": InputTag(templatePath: paths.textareaField),
+            "submissions:checkbox": InputTag(templatePath: paths.checkboxField)
         ])
 
         return .done(on: container)
