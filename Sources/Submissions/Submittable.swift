@@ -1,5 +1,6 @@
 /// Convenience protocol to align how to make fields from Models.
 public protocol Submittable {
+
     /// Make an array of `Field`s for an optional instance.
     ///
     /// - Parameter instance: the instance of the `Submittable` to make fields for.
@@ -8,6 +9,7 @@ public protocol Submittable {
 }
 
 extension Submittable {
+
     /// Make an array of `Field`s for a type (no instance).
     ///
     /// - Returns: an array of `Field`s.
