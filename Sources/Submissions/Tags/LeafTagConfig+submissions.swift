@@ -1,11 +1,19 @@
 import Leaf
+import Sugar
 
 extension LeafTagConfig {
+
+    /// Register Submission's default `InputTag`s using the leaf files determined by the
+    /// `TagTemplatePaths` value.
+    ///
+    /// - Parameter paths: the value containing the leaf paths for the `TnputTag`s.
     public mutating func useSubmissionsTags(paths: TagTemplatePaths = .init()) {
-        use(InputTag(templatePath: paths.emailField), as: "submissions:email")
-        use(InputTag(templatePath: paths.passwordField), as: "submissions:password")
-        use(InputTag(templatePath: paths.textField), as: "submissions:text")
-        use(InputTag(templatePath: paths.hiddenField), as: "submissions:hidden")
-        use(InputTag(templatePath: paths.textareaField), as: "submissions:textarea")
+        use([
+            "submissions:email": InputTag(templatePath:paths.emailField),
+            "submissions:password": InputTag(templatePath:paths.passwordField),
+            "submissions:text": InputTag(templatePath:paths.textField),
+            "submissions:hidden": InputTag(templatePath:paths.hiddenField),
+            "submissions:textarea": InputTag(templatePath:paths.textareaField)
+        ])
     }
 }
