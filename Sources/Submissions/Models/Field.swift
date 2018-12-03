@@ -1,39 +1,55 @@
 import Validation
 import Vapor
 
+/// Wraps a (string representation of a) value including validation metadata. Can be validated.
 public struct Field {
 
     /// The key that references this field.
     let key: String
 
-    /// A label describing this field. Used by Tags to render alongside an input field.
-    let label: String?
-
     /// The value for this field represented as a `String`.
     let value: String?
+
+    /// A label describing this field. Used by Tags to render alongside an input field.
+    let label: String?
 
     /// Whether or not values are allowed to be absent.
     let isRequired: Bool
 
+    /// Performs the validations.
     let validate: Validate
 
     /// Can validate asyncronously.
     public typealias Validate = (Request, ValidationContext) -> Future<[ValidationError]>
 
-    public init<T: CustomStringConvertible>(
+    /// Creates a new `Field`.
+    ///
+    /// - Parameters:
+    ///   - key: The key that references this field.
+    ///   - value: The value of this field.
+    ///   - label: A label describing this field.
+    ///   - validators: The validators to use when validating the value.
+    ///   - asyncValidators: A closure to perform any additional validation that requires async.
+    ///       Takes a request. See `Field.AsyncValidate`.
+    ///   - isRequired: Whether or not the value is allowed to be absent.
+    ///   - requiredStrategy: Determines whether a field is required given a validation context.
+    ///   - errorOnAbsense: The error to be thrown in the `create` context when value is absent as
+    ///       determined by `absentValueStrategy` and `isRequired` is `true`.
+    ///   - absentValueStrategy: Determines which (string) values to treat as absent.
+    public init<V: CustomStringConvertible>(
         key: String,
-        label: String?,
-        value: T?,
-        validators: [Validator<T>],
-        asyncValidators: [Validate],
-        isRequired: Bool,
-        requiredStrategy: RequiredStrategy,
-        errorOnAbsense: ValidationError,
-        absentValueStrategy: AbsentValueStrategy<T>
+        value: V? = nil,
+        label: String? = nil,
+        validators: [Validator<V>] = [],
+        asyncValidators: [Validate] = [],
+        isRequired: Bool = false,
+        requiredStrategy: RequiredStrategy = .onCreateOrUpdate,
+        errorOnAbsense: ValidationError = BasicValidationError("is absent"),
+        absentValueStrategy: AbsentValueStrategy<V> = .nil
     ) {
         self.key = key
-        self.label = label
         self.value = value?.description
+        self.label = label
         self.isRequired = isRequired
 
         validate = { req, context in
@@ -67,34 +83,39 @@ public struct Field {
     }
 }
 
-extension Optional where Wrapped: Reflectable {
+// MARK: - "Convenience" initializers
 
-    /// Make a field corresponding to a key path.
+extension Field {
+
+    /// Creates a new `Field` from an instance and keyPath.
     ///
     /// - Parameters:
-    ///   - keyPath: Path to the value on the submission type.
+    ///   - keyPath: The key that references this field.
+    ///   - value: The value of this field.
     ///   - label: A label describing this field.
     ///   - validators: The validators to use when validating the value.
     ///   - asyncValidators: A closure to perform any additional validation that requires async.
     ///       Takes a request. See `Field.AsyncValidate`.
     ///   - isRequired: Whether or not the value is allowed to be absent.
+    ///   - requiredStrategy: Determines whether a field is required given a validation context.
     ///   - errorOnAbsense: The error to be thrown in the `create` context when value is absent as
     ///       determined by `absentValueStrategy` and `isRequired` is `true`.
     ///   - absentValueStrategy: Determines which (string) values to treat as absent.
-    public func makeField<T: CustomStringConvertible>(
-        keyPath: KeyPath<Wrapped, T>,
+    public init<S: Reflectable, V: CustomStringConvertible>(
+        keyPath: KeyPath<S, V>,
+        instance: S?,
         label: String? = nil,
-        validators: [Validator<T>] = [],
-        asyncValidators: [Field.Validate] = [],
+        validators: [Validator<V>] = [],
+        asyncValidators: [Validate] = [],
         isRequired: Bool = false,
         requiredStrategy: RequiredStrategy = .onCreateOrUpdate,
         errorOnAbsense: ValidationError = BasicValidationError("is absent"),
-        absentValueStrategy: AbsentValueStrategy<T> = .nil
-    ) throws -> Field {
-        return try Field(
-            key: Wrapped.key(for: keyPath),
+        absentValueStrategy: AbsentValueStrategy<V> = .nil
+    ) throws {
+        self.init(
+            key: try S.key(for: keyPath),
+            value: instance?[keyPath: keyPath],
             label: label,
-            value: self?[keyPath: keyPath],
             validators: validators,
             asyncValidators: asyncValidators,
             isRequired: isRequired,
@@ -104,32 +125,34 @@ extension Optional where Wrapped: Reflectable {
         )
     }
 
-    /// Make a field corresponding to a key path with an optional value.
+    /// Creates a new `Field` from an instance and keyPath with an optional value.
     ///
     /// - Parameters:
-    ///   - keyPath: Path to the value on the submission type.
+    ///   - keyPath:
     ///   - label: A label describing this field.
     ///   - validators: The validators to use when validating the value.
     ///   - asyncValidators: A closure to perform any additional validation that requires async.
     ///       Takes a request. See `Field.AsyncValidate`.
     ///   - isRequired: Whether or not the value is allowed to be absent.
+    ///   - requiredStrategy: Determines whether a field is required given a validation context.
     ///   - errorOnAbsense: The error to be thrown in the `create` context when value is absent as
     ///       determined by `absentValueStrategy` and `isRequired` is `true`.
     ///   - absentValueStrategy: Determines which (string) values to treat as absent.
-    public func makeField<T: CustomStringConvertible>(
-        keyPath: KeyPath<Wrapped, T?>,
+    public init<S: Reflectable, V: CustomStringConvertible>(
+        keyPath: KeyPath<S, V?>,
+        instance: S?,
         label: String? = nil,
-        validators: [Validator<T>] = [],
-        asyncValidators: [Field.Validate] = [],
+        validators: [Validator<V>] = [],
+        asyncValidators: [Validate] = [],
         isRequired: Bool = false,
         requiredStrategy: RequiredStrategy = .onCreateOrUpdate,
         errorOnAbsense: ValidationError = BasicValidationError("is absent"),
-        absentValueStrategy: AbsentValueStrategy<T> = .nil
-    ) throws -> Field {
-        return try Field(
-            key: Wrapped.key(for: keyPath),
+        absentValueStrategy: AbsentValueStrategy<V> = .nil
+    ) throws {
+        self.init(
+            key: try S.key(for: keyPath),
+            value: instance?[keyPath: keyPath],
             label: label,
-            value: self?[keyPath: keyPath],
             validators: validators,
             asyncValidators: asyncValidators,
             isRequired: isRequired,
