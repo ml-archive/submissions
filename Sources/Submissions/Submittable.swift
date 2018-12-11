@@ -1,4 +1,3 @@
-import Sugar
 import Vapor
 
 public protocol Submittable: Decodable {
