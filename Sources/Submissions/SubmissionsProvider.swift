@@ -16,3 +16,19 @@ public final class SubmissionsProvider: Provider {
         return .done(on: container)
     }
 }
+
+public extension LeafTagConfig {
+    public mutating func useSubmissionsLeafTags(on container: Container) throws {
+        let config: SubmissionsConfig = try container.make()
+        let paths = config.tagTemplatePaths
+
+        use([
+            "submissions:email": InputTag(templatePath: paths.emailField),
+            "submissions:password": InputTag(templatePath: paths.passwordField),
+            "submissions:text": InputTag(templatePath: paths.textField),
+            "submissions:hidden": InputTag(templatePath: paths.hiddenField),
+            "submissions:textarea": InputTag(templatePath: paths.textareaField),
+            "submissions:checkbox": InputTag(templatePath: paths.checkboxField)
+        ])
+    }
+}
