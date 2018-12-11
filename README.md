@@ -60,29 +60,13 @@ This makes sure that fields and errors can be stored on the request using a `Fie
 
 ### Adding the Leaf tag
 
-#### Using a shared Leaf tag config
-
-This package supports using a shared Leaf tag config which removes the task of registering the tags from the consumer of this package. Please see [this description](https://github.com/nodes-vapor/sugar#mutable-leaf-tag-config) if you want to use this.
-
-#### Manually registering the Leaf tag(s)
+In order to render the Submissions elements, you will need to add the Submissions Leaf tags:
 
 ```swift
 public func configure(_ config: inout Config, _ env: inout Environment, _ services: inout Services) throws {
-    let provider = SubmissionsProvider()
-    services.register(SubmissionsProvider())
-    let paths = provider.config.tagTemplatePaths
-
-    services.register { _ -> LeafTagConfig in
+    services.register { container -> LeafTagConfig in
         var tags = LeafTagConfig.default()
-        tags.use([
-            "submissions:email": InputTag(templatePath: paths.emailField),
-            "submissions:password": InputTag(templatePath: paths.passwordField),
-            "submissions:text": InputTag(templatePath: paths.textField),
-            "submissions:hidden": InputTag(templatePath: paths.hiddenField),
-            "submissions:textarea": InputTag(templatePath: paths.textareaField),
-            "submissions:checkbox": InputTag(templatePath: paths.checkboxField)
-        ])
-
+        try tags.useSubmissionsLeafTags(on: container)
         return tags
     }
 }
