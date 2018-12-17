@@ -1,8 +1,8 @@
 import Vapor
 
 /// An error signaling that validation failed. Info about the error(s) is stored in the FieldCache.
-public enum SubmissionValidationError: Error, Equatable {
-    case invalid
+public struct SubmissionValidationError: Error {
+    init() {}
 }
 
 private struct ErrorResponse: Encodable {

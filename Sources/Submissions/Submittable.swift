@@ -1,26 +1,46 @@
-/// Convenience protocol to align how to make fields from Models.
-public protocol Submittable {
+import Vapor
 
-    /// Make an array of `Field`s for an optional instance.
-    ///
-    /// - Parameter instance: the instance of the `Submittable` to make fields for.
-    /// - Returns: an array of `Field`s.
-    static func makeFields(for instance: Self?) throws -> [Field]
+public protocol Submittable {
+    associatedtype Submission: Decodable, FieldsRepresentable, Reflectable
+
+    static func makeAdditionalFields(
+        for submission: Submission?,
+        given existing: Self?
+    ) throws -> [Field]
+
+    func makeSubmission() -> Submission
 }
 
 extension Submittable {
-
-    /// Make an array of `Field`s for a type (no instance).
-    ///
-    /// - Returns: an array of `Field`s.
-    public static func makeFields() throws -> [Field] {
-        return try makeFields(for: nil)
+    func makeFields(
+        for submission: Submission? = nil
+    ) throws -> [Field] {
+        return try Self.makeFields(for: submission, given: self)
     }
 
-    /// Make an array of `Field`s for the instance.
-    ///
-    /// - Returns: an array of `Field`s.
-    public func makeFields() throws -> [Field] {
-        return try Self.makeFields(for: self)
+    public static func makeFields(
+        for submission: Submission? = nil,
+        given existing: Self? = nil
+    ) throws -> [Field] {
+        return try submission?.makeFields() ?? [] +
+            makeAdditionalFields(for: submission, given: existing)
+    }
+}
+
+extension Submittable {
+    public static func makeAdditionalFields(
+        for submission: Submission?,
+        given existing: Self?
+    ) throws -> [Field] {
+        return []
+    }
+}
+
+extension Submittable {
+    public func validate(inContext context: ValidationContext, on req: Request) throws {
+        try req
+            .fieldCache()
+            .addFields(makeFields(for: req.content.syncDecode(Submission.self)), on: req)
+            .validate(inContext: .update, on: req)
     }
 }

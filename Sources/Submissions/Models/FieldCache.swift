@@ -47,44 +47,60 @@ extension Request {
 
 extension FieldCache {
 
-    /// Add any values and errors from fields to the `FieldCache` so they are available to the
-    /// `InputTag`.
+    /// Add fields to the `FieldCache`.
     ///
     /// - Parameters:
-    ///   - fields: the fields containing the values and errors.
-    ///   - context: the context in which the validation should take place.
+    ///   - fields: the fields to add.
     ///   - req: the request.
     /// - Returns: the field cache itself (for method chaining).
     @discardableResult
-    public func populate<S: Sequence>(
-        with fields: S,
-        inContext context: ValidationContext,
+    public func addFields<S: Sequence>(
+        _ fields: S,
         on req: Request
     ) -> FieldCache where S.Element == Field {
         fields.forEach { field in
             let key = field.key
             self[valueFor: key] = field
-            let errors = field.validate(req, context)
-            self[errorsFor: key] = errors.map { $0.map { $0.reason } }
         }
         return self
     }
 
     /// Validates the values in the field cache.
     ///
-    /// Note: call `populate` at least once before calling this method.
+    /// Note: call `populate` before calling this method so there are fields to validate.
     ///
-    /// - Parameter req: the request
+    /// - Parameters:
+    ///   - req: the request.
+    ///   - context: the context in which the validation should take place.
+    /// - Returns: the field cache itself (for method chaining).
+    @discardableResult
+    public func validate(
+        inContext context: ValidationContext,
+        on req: Request
+    ) -> FieldCache {
+        fields.forEach { key, field in
+            let existing = errors[key, default: req.future([])]
+            let new = field.validate(req, context).map { $0.map { $0.reason } }
+
+            errors[key] = existing.and(new).map(+)
+        }
+        return self
+    }
+
+    /// Inspects the `FieldCache` for errors.
+    ///
+    /// Note: call `populate` before calling this method so there are fields to validate.
+    ///
+    /// - Parameter req: the request.
     /// - Returns: A `Future` that will indicate success or failure when the validation is finished.
-    public func validate(on req: Request) -> Future<Void> {
+    public func assertValid(on req: Request) -> Future<Void> {
         return errors.values
             .flatten(on: req)
             .map { $0.flatMap { $0 } }
             .map { errors in
                 guard errors.isEmpty else {
-                    throw SubmissionValidationError.invalid
+                    throw SubmissionValidationError()
                 }
-                return
             }
     }
 }

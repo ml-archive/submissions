@@ -37,15 +37,14 @@ public final class InputTag: TagRenderer {
         let placeholder = tag.parameters[safe: 1]?.string
         let helpText = tag.parameters[safe: 2]?.string
 
-        let e = (data.errors ?? tag.future([]))
-        return e.flatMap { (errors: [String]) -> Future<TemplateData> in
+        return (data.errors ?? tag.future([])).flatMap {
             let inputData = InputData(
                 key: data.key,
                 value: data.value,
                 label: data.label,
                 isRequired: data.isRequired,
-                errors: errors,
-                hasErrors: !errors.isEmpty,
+                errors: $0,
+                hasErrors: !$0.isEmpty,
                 placeholder: placeholder,
                 helpText: helpText
             )
