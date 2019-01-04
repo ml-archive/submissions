@@ -1,4 +1,3 @@
-import Sugar
 import Vapor
 
 public protocol Submittable: Decodable {
@@ -58,8 +57,6 @@ extension Future where T: Submittable {
     /// - Parameter req: The current `Request`.
     /// - Returns: The unchanged submittable value.
     public func populateFields(on req: Request) -> Future<T> {
-        return self.try { submittable in
-            try req.populateFields(with: T.Submission(submittable).makeFields().mapValues(AnyField.init))
-        }
+        return self.try(req.populateFields)
     }
 }

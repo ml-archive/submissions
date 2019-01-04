@@ -60,27 +60,13 @@ This makes sure that fields and errors can be stored on the request using a `Fie
 
 ### Adding the Leaf tag
 
-#### Using a shared Leaf tag config
-
-This package supports using a shared Leaf tag config which removes the task of registering the tags from the consumer of this package. Please see [this description](https://github.com/nodes-vapor/sugar#mutable-leaf-tag-config) if you want to use this.
-
-#### Manually registering the Leaf tag(s)
+In order to render the Submissions elements, you will need to add the Submissions Leaf tags:
 
 ```swift
 public func configure(_ config: inout Config, _ env: inout Environment, _ services: inout Services) throws {
-    let provider = SubmissionsProvider()
-    services.register(SubmissionsProvider())
-    let paths = provider.config.tagTemplatePaths
-
-    services.register { _ -> LeafTagConfig in
+    services.register { container -> LeafTagConfig in
         var tags = LeafTagConfig.default()
-        tags.use([
-            "submissions:email": InputTag(templatePath: paths.emailField),
-            "submissions:password": InputTag(templatePath: paths.passwordField),
-            "submissions:text": InputTag(templatePath: paths.textField),
-            "submissions:textarea": InputTag(templatePath: paths.textareaField)
-        ])
-
+        try tags.useSubmissionsLeafTags(on: container)
         return tags
     }
 }
@@ -297,7 +283,7 @@ router.get("todos/create", use: frontendTodoController.renderCreate)
 
 > Note how we're using the `privateContainer` on the `Request` since that is where the field cache is registered. This is done to ensure the field cache does not outlive the request.
 
-In order to populate the field with the values of an existing entity we need to first load our entity and put its values in the field cache like so.
+In order to populate the fields with the values of an existing entity we need to first load our entity and put its values in the field cache like so.
 
 ```swift
 func renderEdit(req: Request) throws -> Future<View> {
@@ -313,6 +299,13 @@ In `routes.swift`:
 ```swift
 router.get("todos", Todo.parameter, "edit", use: frontendTodoController.renderEdit)
 ```
+
+> It is also possible to populate the fields for the form directly using an (optional) instance:
+>```swift
+>let todo: Todo? = ... // e.g. from a database query
+>req.populateFields(todo)
+>```
+>If the value is `nil` it will have the same effect as calling `req.populateFields(Todo.self)`.
 
 ### Validating and storing the data
 
