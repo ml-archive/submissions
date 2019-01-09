@@ -36,12 +36,46 @@ extension FieldCache {
 
 extension Request {
 
-    /// Creates or retreives a field cache object.
+    /// Creates or retrieves a field cache object.
     ///
-    /// - Returns: The `FieldCache`
+    /// - Returns: The `FieldCache`.
     /// - Throws: When no `FieldCache` has been registered with this container.
     public func fieldCache() throws -> FieldCache {
         return try privateContainer.make()
+    }
+
+    /// Add fields to the field cache.
+    ///
+    /// - Parameters:
+    ///   - submission: The submission containing the values for the fields, or nil.
+    ///   - submittable: An existing submittable value used during validation, or nil.
+    ///   - type: The type of the Submittable. Only needed when `submission` == nil.
+    /// - Returns: The `FieldCache`.
+    /// - Throws: When no `FieldCache` has been registered with this container.
+    @discardableResult
+    public func addFields<S: Submittable>(
+        for submission: S.Submission? = nil,
+        given submittable: S? = nil,
+        forType type: S.Type = S.self
+    ) throws -> FieldCache {
+        return try fieldCache()
+            .addFields(S.makeFields(for: submission, given: submittable), on: self)
+    }
+
+    /// Add fields to the field cache.
+    ///
+    /// - Parameters:
+    ///   - instance: The source of the values for the fields, or nil.
+    ///   - type: The concretetype of the `FieldsRepresentable`.
+    ///       Only needed when `submission` == nil.
+    /// - Returns: The `FieldCache`.
+    /// - Throws: When no `FieldCache` has been registered with this container.
+    @discardableResult
+    public func addFields<F: FieldsRepresentable>(
+        for instance: F? = nil,
+        forType type: F.Type = F.self
+    ) throws -> FieldCache {
+        return try fieldCache().addFields(F.makeFields(for: instance), on: self)
     }
 }
 
