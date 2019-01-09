@@ -67,7 +67,7 @@ public struct Field {
                 } catch {
                     return req.future(error: error)
                 }
-            } else if requiredStrategy.isRequired(context) {
+            } else if isRequired, requiredStrategy.isRequired(context) {
                 errors = [errorOnAbsense]
             } else {
                 errors = []

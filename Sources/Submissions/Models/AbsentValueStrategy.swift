@@ -16,7 +16,7 @@ extension AbsentValueStrategy where T: Equatable {
     /// - Parameter reference: reference value to compare to.
     /// - Returns: an `AbsentValueStrategy`
     public static func equal(to reference: T) -> AbsentValueStrategy {
-        return .custom {  $0 == reference }
+        return .custom { $0 == reference }
     }
 
     /// Treat values as absent if they are contained in the provided value.
