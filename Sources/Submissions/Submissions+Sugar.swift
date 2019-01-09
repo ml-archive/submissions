@@ -5,12 +5,14 @@ extension Submittable where Self: Creatable {
 
     /// See `Creatable`.
     public static func preCreate(on req: Request) -> Future<Void> {
-        return Future.flatMap(on: req) {
-            let fields = try Self.makeFields(for: req.content.syncDecode(Submission.self))
-            return try req.fieldCache()
-                .addFields(fields, on: req)
-                .validate(inContext: .create, on: req)
-                .assertValid(on: req)
+        return .flatMap(on: req) {
+            try req.content.decode(Submission.self)
+                .flatMap { (submission: Submission) in
+                    try req
+                        .addFields(for: submission)
+                        .validate(inContext: .create, on: req)
+                        .assertValid(on: req)
+                }
         }
     }
 }
@@ -19,29 +21,30 @@ extension Submittable where Self: Updatable {
 
     /// See `Updatable`.
     public func preUpdate(on req: Request) -> Future<Void> {
-        return Future.flatMap(on: req) {
-            let fields = try Self.makeFields(
-                for: req.content.syncDecode(Submission.self),
-                given: self
-            )
-            return try req.fieldCache()
-                .addFields(fields, on: req)
-                .validate(inContext: .update, on: req)
-                .assertValid(on: req)
+        return .flatMap(on: req) {
+            try req.content.decode(Submission.self)
+                .flatMap { (submission: Submission) in
+                    try req
+                        .addFields(for: submission, given: self)
+                        .validate(inContext: .update, on: req)
+                        .assertValid(on: req)
+                }
         }
     }
 }
 
-extension Loginnable where Self.Login: Submittable {
+extension Loginable where Self.Login: Submittable {
 
-    /// See `Loginnable`.
+    /// See `Loginable`.
     public static func preLogin(on req: Request) -> Future<Void> {
-        return Future.flatMap(on: req) {
-            let fields = try req.content.syncDecode(Login.Submission.self).makeFields()
-            return try req.fieldCache()
-                .addFields(fields, on: req)
-                .validate(inContext: .create, on: req)
-                .assertValid(on: req)
+        return .flatMap(on: req) {
+            try req.content.decode(Login.Submission.self)
+                .flatMap { (submission: Login.Submission) in
+                    try req
+                        .addFields(for: submission)
+                        .validate(inContext: .create, on: req)
+                        .assertValid(on: req)
+            }
         }
     }
 }
