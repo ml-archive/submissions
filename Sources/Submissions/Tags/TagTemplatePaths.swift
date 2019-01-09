@@ -15,6 +15,7 @@ public struct TagTemplatePaths {
 
     /// Path to template for input element of type "hidden"
     public let hiddenField: String
+
     /// Path to template for input element of type "checkbox"
     public let checkboxField: String
 
