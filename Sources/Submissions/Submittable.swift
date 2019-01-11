@@ -3,6 +3,14 @@ import Vapor
 public protocol Submittable {
     associatedtype Submission: Decodable, FieldsRepresentable, Reflectable
 
+    /// Make fields for validation in addition to the ones from the `Submission` given an existing
+    /// `Stubmittabl` entity. This can be used when the validation depends on an existing entity.
+    /// For example to add a filter to a database query ensuring uniqueness of a property.
+    ///
+    /// - Parameters:
+    ///   - submission: the submission containing new values, or nil.
+    ///   - existing: an existing entity, or nil.
+    /// - Returns: An array of `Field`s.
     static func makeAdditionalFields(
         for submission: Submission?,
         given existing: Self?
@@ -12,35 +20,30 @@ public protocol Submittable {
 }
 
 extension Submittable {
-    func makeFields(
-        for submission: Submission? = nil
-    ) throws -> [Field] {
-        return try Self.makeFields(for: submission, given: self)
-    }
 
+    /// Make fields for a `Submittable`. Includes fields from the `Submission` and additional
+    /// Fields.
+    ///
+    /// - Parameters:
+    ///   - submission: the submission containing new values, or nil.
+    ///   - existing: an existing entity, or nil.
+    /// - Returns: An array of `Field`s.
     public static func makeFields(
         for submission: Submission? = nil,
         given existing: Self? = nil
     ) throws -> [Field] {
-        return try submission?.makeFields() ?? [] +
+        return try Submission.makeFields(for: submission) +
             makeAdditionalFields(for: submission, given: existing)
     }
 }
 
 extension Submittable {
+
+    /// See `Submittable`. Default implentation that returns an empty array.
     public static func makeAdditionalFields(
         for submission: Submission?,
         given existing: Self?
     ) throws -> [Field] {
         return []
-    }
-}
-
-extension Submittable {
-    public func validate(inContext context: ValidationContext, on req: Request) throws {
-        try req
-            .fieldCache()
-            .addFields(makeFields(for: req.content.syncDecode(Submission.self)), on: req)
-            .validate(inContext: .update, on: req)
     }
 }
