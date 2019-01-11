@@ -35,7 +35,7 @@ public struct Field {
     ///   - requiredStrategy: Determines whether a field is required given a validation context.
     ///   - errorOnAbsense: The error to be thrown in the `create` context when value is absent as
     ///       determined by `absentValueStrategy` and `isRequired` is `true`.
-    ///   - absentValueStrategy: Determines which (string) values to treat as absent.
+    ///   - absentValueStrategy: Determines which values to treat as absent.
     public init<V: CustomStringConvertible>(
         key: String,
         value: V? = nil,
@@ -45,16 +45,18 @@ public struct Field {
         isRequired: Bool = false,
         requiredStrategy: RequiredStrategy = .onCreateOrUpdate,
         errorOnAbsense: ValidationError = BasicValidationError("is absent"),
-        absentValueStrategy: AbsentValueStrategy<V> = .nil
+        isAbsentWhen absentValueStrategy: AbsentValueStrategy<V> = .nil
     ) {
+        let valueIfPresent = value.flatMap(absentValueStrategy.valueIfPresent)
+
         self.key = key
-        self.value = value?.description
+        self.value = valueIfPresent?.description
         self.label = label
         self.isRequired = isRequired
 
         validate = { req, context in
             let errors: [ValidationError]
-            if let value = value.flatMap(absentValueStrategy.valueIfPresent) {
+            if let value = valueIfPresent {
                 do {
                     errors = try validators.compactMap { validator in
                         do {
@@ -100,7 +102,7 @@ extension Field {
     ///   - requiredStrategy: Determines whether a field is required given a validation context.
     ///   - errorOnAbsense: The error to be thrown in the `create` context when value is absent as
     ///       determined by `absentValueStrategy` and `isRequired` is `true`.
-    ///   - absentValueStrategy: Determines which (string) values to treat as absent.
+    ///   - absentValueStrategy: Determines which values to treat as absent.
     public init<S: Reflectable, V: CustomStringConvertible>(
         keyPath: KeyPath<S, V>,
         instance: S? = nil,
@@ -110,7 +112,7 @@ extension Field {
         isRequired: Bool = false,
         requiredStrategy: RequiredStrategy = .onCreateOrUpdate,
         errorOnAbsense: ValidationError = BasicValidationError("is absent"),
-        absentValueStrategy: AbsentValueStrategy<V> = .nil
+        isAbsentWhen absentValueStrategy: AbsentValueStrategy<V> = .nil
     ) throws {
         self.init(
             key: try S.key(for: keyPath),
@@ -121,7 +123,7 @@ extension Field {
             isRequired: isRequired,
             requiredStrategy: requiredStrategy,
             errorOnAbsense: errorOnAbsense,
-            absentValueStrategy: absentValueStrategy
+            isAbsentWhen: absentValueStrategy
         )
     }
 
@@ -137,7 +139,7 @@ extension Field {
     ///   - requiredStrategy: Determines whether a field is required given a validation context.
     ///   - errorOnAbsense: The error to be thrown in the `create` context when value is absent as
     ///       determined by `absentValueStrategy` and `isRequired` is `true`.
-    ///   - absentValueStrategy: Determines which (string) values to treat as absent.
+    ///   - absentValueStrategy: Determines which values to treat as absent.
     public init<S: Reflectable, V: CustomStringConvertible>(
         keyPath: KeyPath<S, V?>,
         instance: S?,
@@ -147,7 +149,7 @@ extension Field {
         isRequired: Bool = false,
         requiredStrategy: RequiredStrategy = .onCreateOrUpdate,
         errorOnAbsense: ValidationError = BasicValidationError("is absent"),
-        absentValueStrategy: AbsentValueStrategy<V> = .nil
+        isAbsentWhen absentValueStrategy: AbsentValueStrategy<V> = .nil
     ) throws {
         self.init(
             key: try S.key(for: keyPath),
@@ -158,7 +160,7 @@ extension Field {
             isRequired: isRequired,
             requiredStrategy: requiredStrategy,
             errorOnAbsense: errorOnAbsense,
-            absentValueStrategy: absentValueStrategy
+            isAbsentWhen: absentValueStrategy
         )
     }
 }
