@@ -92,8 +92,8 @@ extension Field {
     /// Creates a new `Field` from an instance and keyPath.
     ///
     /// - Parameters:
-    ///   - keyPath: The key that references this field.
-    ///   - value: The value of this field.
+    ///   - keyPath: The key path that references the value for this field.
+    ///   - instance: The instance containing the value to be validated at `keyPath`.
     ///   - label: A label describing this field.
     ///   - validators: The validators to use when validating the value.
     ///   - asyncValidators: A closure to perform any additional validation that requires async.
@@ -130,7 +130,8 @@ extension Field {
     /// Creates a new `Field` from an instance and keyPath with an optional value.
     ///
     /// - Parameters:
-    ///   - keyPath:
+    ///   - keyPath: The key path that references the value for this field.
+    ///   - instance: The instance containing the value to be validated at `keyPath`.
     ///   - label: A label describing this field.
     ///   - validators: The validators to use when validating the value.
     ///   - asyncValidators: A closure to perform any additional validation that requires async.
