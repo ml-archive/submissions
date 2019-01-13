@@ -21,7 +21,7 @@ struct User: Content, Equatable, Reflectable {
     }
 }
 
-extension User: Submittable {
+extension User: FieldsRepresentable {
     static func makeFields(for user: User? = nil) throws -> [Field] {
         return try [
             Field(
@@ -39,7 +39,7 @@ extension User: Submittable {
                 keyPath: \.emptyStringMeansAbsent,
                 instance: user,
                 isRequired: true,
-                absentValueStrategy: .equal(to: "")
+                isAbsentWhen: .equal(to: "")
             ),
             Field(
                 keyPath: \.unique,
