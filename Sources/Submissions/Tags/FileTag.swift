@@ -1,6 +1,6 @@
 import TemplateKit
 
-public final class InputTag: TagRenderer {
+public final class FileTag: TagRenderer {
     struct InputData: Encodable {
         let key: String
         let value: String?
@@ -8,10 +8,11 @@ public final class InputTag: TagRenderer {
         let isRequired: Bool
         let errors: [String]
         let hasErrors: Bool
-        let placeholder: String?
         let helpText: String?
+        let accept: String?
+        let multiple: String?
     }
-    
+
     let c: (TagContext, InputData) throws -> Future<TemplateData>
 
     public init(templatePath: String) {
@@ -28,8 +29,9 @@ public final class InputTag: TagRenderer {
     public func render(tag: TagContext) throws -> Future<TemplateData> {
         let data = try tag.submissionsData()
 
-        let placeholder = tag.parameters[safe: 1]?.string
-        let helpText = tag.parameters[safe: 2]?.string
+        let helpText = tag.parameters[safe: 1]?.string
+        let accept = tag.parameters[safe: 2]?.string
+        let multiple = tag.parameters[safe: 3]?.string
 
         let inputData = InputData(
             key: data.key,
@@ -38,8 +40,9 @@ public final class InputTag: TagRenderer {
             isRequired: data.isRequired,
             errors: data.errors,
             hasErrors: data.hasErrors,
-            placeholder: placeholder,
-            helpText: helpText
+            helpText: helpText,
+            accept: accept,
+            multiple: multiple
         )
 
         return try c(tag, inputData)
