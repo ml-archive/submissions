@@ -1,6 +1,8 @@
+import Vapor
+
 /// Determine which values count as an absent value besides `nil`.
 /// This can be useful to when dealing with empty strings or "null".
-public enum AbsentValueStrategy {
+public enum DefaultAbsentValueStrategy {
     /// Only treat `nil` as absent.
     case `nil`
 
@@ -11,8 +13,8 @@ public enum AbsentValueStrategy {
     case `in`([String])
 }
 
-extension AbsentValueStrategy {
-    func valueIfPresent<T: CustomStringConvertible>(_ value: T?) -> T? {
+extension DefaultAbsentValueStrategy: AbsentValueStrategy {
+    public func valueIfPresent<T: CustomStringConvertible>(_ value: T?) -> T? {
         switch (self, value) {
         case (.nil, _):
             return value

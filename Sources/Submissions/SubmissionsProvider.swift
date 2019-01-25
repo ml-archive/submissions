@@ -32,6 +32,7 @@ public extension LeafTagConfig {
             "submissions:email": InputTag(templatePath: paths.emailField),
             "submissions:password": InputTag(templatePath: paths.passwordField),
             "submissions:text": InputTag(templatePath: paths.textField),
+            "submissions:file": FileTag(templatePath: paths.fileField),
             "submissions:hidden": InputTag(templatePath: paths.hiddenField),
             "submissions:textarea": InputTag(templatePath: paths.textareaField),
             "submissions:checkbox": InputTag(templatePath: paths.checkboxField)
