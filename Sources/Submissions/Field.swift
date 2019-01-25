@@ -23,7 +23,7 @@ public struct Field<S: Submittable> {
         validators: [Validator<T>] = [],
         asyncValidators: [Validate<T>],
         isRequired: Bool = true,
-        absentValueStrategy: AbsentValueStrategy = .equal(""),
+        absentValueStrategy: AbsentValueStrategy = DefaultAbsentValueStrategy.equal(""),
         errorOnAbsense: ValidationError
     ) {
         self.label = label
