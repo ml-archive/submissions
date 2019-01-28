@@ -1,5 +1,5 @@
 <div class="form-group form-check">
-    <input type="checkbox" class="form-check-input" id="#(key)" name="#(key)" value="1" #if(value) { checked }>
+    <input type="checkbox" class="form-check-input" id="#(key)" name="#(key)" value="true" #if(value) { checked }>
 
     #if(label) {
         <label class="form-check-label" for="#(key)">#(label)</label>
