@@ -143,7 +143,7 @@ extension Field {
     ///   - absentValueStrategy: Determines which values to treat as absent.
     public init<S: Reflectable, V: CustomStringConvertible>(
         keyPath: KeyPath<S, V?>,
-        instance: S?,
+        instance: S? = nil,
         label: String? = nil,
         validators: [Validator<V>] = [],
         asyncValidators: [Validate] = [],

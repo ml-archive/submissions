@@ -14,7 +14,11 @@ final class MockTemplateRenderer: TemplateRenderer, Service {
         self.container = container
     }
 
-    func render<E>(_ path: String, _ context: E, userInfo: [AnyHashable: Any]) -> Future<View> where E: Encodable {
+    func render<E>(
+        _ path: String,
+        _ context: E,
+        userInfo: [AnyHashable: Any]
+    ) -> Future<View> where E: Encodable {
         let encoder = JSONEncoder()
         let data = try! encoder.encode(EncodableViewData(context: context, path: path))
         let view = View(data: data)

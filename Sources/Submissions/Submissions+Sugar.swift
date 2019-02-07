@@ -17,7 +17,7 @@ extension Submittable where Self: Creatable {
     }
 }
 
-extension Submittable where Self: Updatable {
+extension Submittable where Self: Updatable, Self.Update == Self.Submission {
 
     /// See `Updatable`.
     public func preUpdate(on req: Request) -> Future<Void> {
