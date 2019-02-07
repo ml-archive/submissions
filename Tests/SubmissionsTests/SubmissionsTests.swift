@@ -55,7 +55,7 @@ final class SubmissionsTests: XCTestCase {
                 key: "name",
                 value: "M",
                 label: "Name",
-                errors: ["data is not larger than 2"],
+                errors: ["data is less than required minimum of 2 characters"],
                 hasErrors: true
             )
         )
