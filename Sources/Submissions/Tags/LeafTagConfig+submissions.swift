@@ -7,7 +7,7 @@ extension LeafTagConfig {
     /// `TagTemplatePaths` value.
     ///
     /// - Parameter paths: the value containing the leaf paths for the `TnputTag`s.
-    public mutating func useSubmissionsTags(paths: TagTemplatePaths = .init()) {
+    public mutating func useSubmissionsLeafTags(paths: TagTemplatePaths = .init()) {
         use([
             "submissions:checkbox": InputTag(templatePath: paths.checkboxField),
             "submissions:email": InputTag(templatePath: paths.emailField),
