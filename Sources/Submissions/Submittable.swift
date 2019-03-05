@@ -21,7 +21,7 @@ public protocol Submittable {
         given existing: Self?
     ) throws -> [Field]
 
-    func makeSubmission() -> Submission
+    func makeSubmission() -> Submission?
 }
 
 extension Submittable {
@@ -37,7 +37,7 @@ extension Submittable {
         for submission: Submission? = nil,
         given existing: Self? = nil
     ) throws -> [Field] {
-        return try Submission.makeFields(for: submission) +
+        return try Submission.makeFields(for: submission ?? existing?.makeSubmission()) +
             makeAdditionalFields(for: submission, given: existing)
     }
 }
@@ -50,5 +50,9 @@ extension Submittable {
         given existing: Self?
     ) throws -> [Field] {
         return []
+    }
+
+    public func makeSubmission() -> Submission? {
+        return nil
     }
 }
