@@ -79,6 +79,15 @@ extension Request {
     }
 }
 
+extension Future where T: Submittable {
+    public func addFields(on req: Request) -> Future<T> {
+        return self.map { element -> T in
+            try req.addFields(given: element)
+            return element
+        }
+    }
+}
+
 extension FieldCache {
 
     /// Add fields to the `FieldCache`.
