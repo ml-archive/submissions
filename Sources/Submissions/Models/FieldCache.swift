@@ -111,10 +111,10 @@ extension FieldCache {
     public func validate(
         inContext context: ValidationContext,
         on req: Request
-    ) -> FieldCache {
-        fields.forEach { key, field in
+    ) throws -> FieldCache {
+        try fields.forEach { key, field in
             let existing = errors[key, default: req.future([])]
-            let new = field.validate(req, context).map { $0.map { $0.reason } }
+            let new = try field.validate(req, context).map { $0.map { $0.reason } }
 
             errors[key] = existing.and(new).map(+)
         }

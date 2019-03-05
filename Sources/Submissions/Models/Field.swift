@@ -20,7 +20,7 @@ public struct Field {
     let validate: Validate
 
     /// Can validate asyncronously.
-    public typealias Validate = (Request, ValidationContext) -> Future<[ValidationError]>
+    public typealias Validate = (Request, ValidationContext) throws -> Future<[ValidationError]>
 
     /// Creates a new `Field`.
     ///
@@ -75,8 +75,8 @@ public struct Field {
                 errors = []
             }
 
-            return asyncValidators
-                .map { validator in validator(req, context) }
+            return try asyncValidators
+                .map { validator in try validator(req, context) }
                 .flatten(on: req)
                 .map {
                     $0.flatMap { $0 } + errors
