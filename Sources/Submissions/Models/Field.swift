@@ -31,7 +31,7 @@ public struct Field {
     ///   - validators: The validators to use when validating the value.
     ///   - asyncValidators: A closure to perform any additional validation that requires async.
     ///       Takes a request. See `Field.AsyncValidate`.
-    ///   - isRequired: Whether or not the value is allowed to be absent.
+    ///   - isRequired: Whether or not the value is allowed to be absent. Defaults to `true`.
     ///   - requiredStrategy: Determines whether a field is required given a validation context.
     ///   - errorOnAbsense: The error to be thrown in the `create` context when value is absent as
     ///       determined by `absentValueStrategy` and `isRequired` is `true`.
@@ -42,7 +42,7 @@ public struct Field {
         label: String? = nil,
         validators: [Validator<V>] = [],
         asyncValidators: [Validate] = [],
-        isRequired: Bool = false,
+        isRequired: Bool = true,
         requiredStrategy: RequiredStrategy = .onCreateOrUpdate,
         errorOnAbsense: ValidationError = BasicValidationError("is absent"),
         isAbsentWhen absentValueStrategy: AbsentValueStrategy<V> = .nil
