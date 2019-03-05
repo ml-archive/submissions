@@ -3,8 +3,10 @@ import Vapor
 /// Defines the ability for a type to be submitted and validated with help of an associated type.
 public protocol Submittable {
 
+    typealias SubmissionType = Decodable & FieldsRepresentable & Reflectable
+
     /// A type representing the data to be validated.
-    associatedtype Submission: Decodable, FieldsRepresentable, Reflectable
+    associatedtype Submission: SubmissionType
 
     /// Make fields for validation in addition to the ones from the `Submission` given an existing
     /// `Stubmittabl` entity. This can be used when the validation depends on an existing entity.
