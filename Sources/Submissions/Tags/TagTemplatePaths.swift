@@ -1,44 +1,52 @@
 /// Configuration for template paths used when rendering tags.
 public struct TagTemplatePaths {
 
+    /// Path to template for input element of type "checkbox"
+    public let checkboxField: String
+
     /// Path to template for input element of type "email"
     public let emailField: String
 
-    /// Path to to template for input element of type "password"
-    public let passwordField: String
-
-    /// Path to template for textarea element
-    public let textareaField: String
-
-    /// Path to template for input element of type "text"
-    public let textField: String
+    /// Path to template for input element of type "file"
+    public let fileField: String
 
     /// Path to template for input element of type "hidden"
     public let hiddenField: String
 
-    /// Path to template for input element of type "checkbox"
-    public let checkboxField: String
+    /// Path to to template for input element of type "password"
+    public let passwordField: String
+
+    /// Path to template for input element of type "text"
+    public let textField: String
+
+    /// Path to template for textarea element
+    public let textareaField: String
 
     /// Create a new TagTemplatePaths configuration value.
     ///
     /// - Parameters:
+    ///   - checkboxField: path to template for input element of type "checkbox"
     ///   - emailField: path to template for input element of type "email"
+    ///   - fileField: path to template for input element of type "file"
+    ///   - hiddenField: path to template for input element of type "hidden"
     ///   - passwordField: path to template for input element of type "password"
-    ///   - textareaField: path to template for textarea element
     ///   - textField: path to template for input element of type "text"
+    ///   - textareaField: path to template for input element of type "textarea"
     public init(
+        checkboxField: String = "Submissions/Fields/checkbox-input",
         emailField: String = "Submissions/Fields/email-input",
-        passwordField: String = "Submissions/Fields/password-input",
-        textareaField: String = "Submissions/Fields/textarea-input",
-        textField: String = "Submissions/Fields/text-input",
+        fileField: String = "Submissions/Fields/file-input",
         hiddenField: String = "Submissions/Fields/hidden-input",
-        checkboxField: String = "Submissions/Fields/checkbox-input"
+        passwordField: String = "Submissions/Fields/password-input",
+        textField: String = "Submissions/Fields/text-input",
+        textareaField: String = "Submissions/Fields/textarea-input"
     ) {
-        self.emailField = emailField
-        self.passwordField = passwordField
-        self.textareaField = textareaField
-        self.textField = textField
-        self.hiddenField = hiddenField
         self.checkboxField = checkboxField
+        self.emailField = emailField
+        self.fileField = fileField
+        self.hiddenField = hiddenField
+        self.passwordField = passwordField
+        self.textField = textField
+        self.textareaField = textareaField
     }
 }

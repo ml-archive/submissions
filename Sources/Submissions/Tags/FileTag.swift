@@ -1,8 +1,7 @@
 import TemplateKit
-import Sugar
 
-/// A tag that renders a template file corresponding to a validatable form input element.
-public final class InputTag: TagRenderer {
+/// A tag that renders a template file corresponding to a file input element.
+public final class FileTag: TagRenderer {
     struct InputData: Encodable {
         let key: String
         let value: String?
@@ -10,17 +9,18 @@ public final class InputTag: TagRenderer {
         let isRequired: Bool
         let errors: [String]
         let hasErrors: Bool
-        let placeholder: String?
         let helpText: String?
+        let accept: String?
+        let multiple: String?
     }
 
     /// Create a new `InputTag`.
     ///
     /// - Parameter templatePath: path to the template file to render
     public init(templatePath: String) {
-        render = { tagContext, inputData in
-            try tagContext.requireNoBody()
-            return try tagContext
+        render = { tag, inputData in
+            try tag.requireNoBody()
+            return try tag
                 .container
                 .make(TemplateRenderer.self)
                 .render(templatePath, inputData)
@@ -30,12 +30,12 @@ public final class InputTag: TagRenderer {
 
     private let render: (TagContext, InputData) throws -> Future<TemplateData>
 
-    /// See `TagRenderer`.
     public func render(tag: TagContext) throws -> Future<TemplateData> {
         let data = try tag.submissionsData()
 
-        let placeholder = tag.parameters[safe: 1]?.string
-        let helpText = tag.parameters[safe: 2]?.string
+        let helpText = tag.parameters[safe: 1]?.string
+        let accept = tag.parameters[safe: 2]?.string
+        let multiple = tag.parameters[safe: 3]?.string
 
         return (data.errors ?? tag.future([])).flatMap {
             let inputData = InputData(
@@ -45,8 +45,9 @@ public final class InputTag: TagRenderer {
                 isRequired: data.isRequired,
                 errors: $0,
                 hasErrors: !$0.isEmpty,
-                placeholder: placeholder,
-                helpText: helpText
+                helpText: helpText,
+                accept: accept,
+                multiple: multiple
             )
             return try self.render(tag, inputData)
         }
