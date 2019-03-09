@@ -30,6 +30,7 @@ public final class FileTag: TagRenderer {
 
     private let render: (TagContext, InputData) throws -> Future<TemplateData>
 
+    /// See `TagRenderer`.
     public func render(tag: TagContext) throws -> Future<TemplateData> {
         let data = try tag.submissionsData()
 

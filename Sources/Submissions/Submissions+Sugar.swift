@@ -9,7 +9,7 @@ extension Submittable where Self: Creatable {
             try req.content.decode(Submission.self)
                 .flatMap { (submission: Submission) in
                     try req
-                        .addFields(for: submission)
+                        .addFields(for: submission, forType: Self.self)
                         .validate(inContext: .create, on: req)
                         .assertValid(on: req)
                 }
@@ -41,7 +41,7 @@ extension Loginable where Self.Login: Submittable {
             try req.content.decode(Login.Submission.self)
                 .flatMap { (submission: Login.Submission) in
                     try req
-                        .addFields(for: submission)
+                        .addFields(for: submission, forType: Login.self)
                         .validate(inContext: .create, on: req)
                         .assertValid(on: req)
             }
