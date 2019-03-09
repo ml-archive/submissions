@@ -66,7 +66,7 @@ extension Request {
     ///
     /// - Parameters:
     ///   - instance: The source of the values for the fields, or nil.
-    ///   - type: The concretetype of the `FieldsRepresentable`.
+    ///   - type: The concrete type of the `FieldsRepresentable`.
     ///       Only needed when `submission` == nil.
     /// - Returns: The `FieldCache`.
     /// - Throws: When no `FieldCache` has been registered with this container.
@@ -80,10 +80,15 @@ extension Request {
 }
 
 extension Future where T: Submittable {
+
+    /// Add fields to the field cache.
+    ///
+    /// - Parameters:
+    ///   - req: The request.
+    /// - Returns: A `Future` of `T`.
     public func addFields(on req: Request) -> Future<T> {
-        return self.map { element -> T in
+        return self.try { element in
             try req.addFields(given: element)
-            return element
         }
     }
 }
