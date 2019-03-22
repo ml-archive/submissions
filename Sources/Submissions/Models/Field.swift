@@ -33,7 +33,7 @@ public struct Field {
     ///       Takes a request. See `Field.AsyncValidate`.
     ///   - isRequired: Whether or not the value is allowed to be absent. Defaults to `true`.
     ///   - requiredStrategy: Determines whether a field is required given a validation context.
-    ///   - errorOnAbsense: The error to be thrown in the `create` context when value is absent as
+    ///   - errorOnAbsence: The error to be thrown in the `create` context when value is absent as
     ///       determined by `absentValueStrategy` and `isRequired` is `true`.
     ///   - absentValueStrategy: Determines which values to treat as absent.
     public init<V: CustomStringConvertible>(
@@ -44,7 +44,7 @@ public struct Field {
         asyncValidators: [Validate] = [],
         isRequired: Bool = true,
         requiredStrategy: RequiredStrategy = .onCreateOrUpdate,
-        errorOnAbsense: ValidationError = BasicValidationError("is absent"),
+        errorOnAbsence: ValidationError = BasicValidationError("is absent"),
         isAbsentWhen absentValueStrategy: AbsentValueStrategy<V> = .nil
     ) {
         let valueIfPresent = value.flatMap(absentValueStrategy.valueIfPresent)
@@ -70,7 +70,7 @@ public struct Field {
                     return req.future(error: error)
                 }
             } else if isRequired, requiredStrategy.isRequired(context) {
-                errors = [errorOnAbsense]
+                errors = [errorOnAbsence]
             } else {
                 errors = []
             }
@@ -100,7 +100,7 @@ extension Field {
     ///       Takes a request. See `Field.AsyncValidate`.
     ///   - isRequired: Whether or not the value is allowed to be absent.
     ///   - requiredStrategy: Determines whether a field is required given a validation context.
-    ///   - errorOnAbsense: The error to be thrown in the `create` context when value is absent as
+    ///   - errorOnAbsence: The error to be thrown in the `create` context when value is absent as
     ///       determined by `absentValueStrategy` and `isRequired` is `true`.
     ///   - absentValueStrategy: Determines which values to treat as absent.
     public init<S: Reflectable, V: CustomStringConvertible>(
@@ -111,7 +111,7 @@ extension Field {
         asyncValidators: [Validate] = [],
         isRequired: Bool = false,
         requiredStrategy: RequiredStrategy = .onCreateOrUpdate,
-        errorOnAbsense: ValidationError = BasicValidationError("is absent"),
+        errorOnAbsence: ValidationError = BasicValidationError("is absent"),
         isAbsentWhen absentValueStrategy: AbsentValueStrategy<V> = .nil
     ) throws {
         self.init(
@@ -122,7 +122,7 @@ extension Field {
             asyncValidators: asyncValidators,
             isRequired: isRequired,
             requiredStrategy: requiredStrategy,
-            errorOnAbsense: errorOnAbsense,
+            errorOnAbsence: errorOnAbsence,
             isAbsentWhen: absentValueStrategy
         )
     }
@@ -138,7 +138,7 @@ extension Field {
     ///       Takes a request. See `Field.AsyncValidate`.
     ///   - isRequired: Whether or not the value is allowed to be absent.
     ///   - requiredStrategy: Determines whether a field is required given a validation context.
-    ///   - errorOnAbsense: The error to be thrown in the `create` context when value is absent as
+    ///   - errorOnAbsence: The error to be thrown in the `create` context when value is absent as
     ///       determined by `absentValueStrategy` and `isRequired` is `true`.
     ///   - absentValueStrategy: Determines which values to treat as absent.
     public init<S: Reflectable, V: CustomStringConvertible>(
@@ -149,7 +149,7 @@ extension Field {
         asyncValidators: [Validate] = [],
         isRequired: Bool = false,
         requiredStrategy: RequiredStrategy = .onCreateOrUpdate,
-        errorOnAbsense: ValidationError = BasicValidationError("is absent"),
+        errorOnAbsence: ValidationError = BasicValidationError("is absent"),
         isAbsentWhen absentValueStrategy: AbsentValueStrategy<V> = .nil
     ) throws {
         self.init(
@@ -160,7 +160,7 @@ extension Field {
             asyncValidators: asyncValidators,
             isRequired: isRequired,
             requiredStrategy: requiredStrategy,
-            errorOnAbsense: errorOnAbsense,
+            errorOnAbsence: errorOnAbsence,
             isAbsentWhen: absentValueStrategy
         )
     }
