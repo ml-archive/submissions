@@ -3,7 +3,7 @@
         <label for="#(key)">#(label)</label>
     }
 
-    #bs:formFile("form-control #if(hasErrors) { is-invalid }", "id='#(key)' name='#(key)' #if(value) { value='#(value)' } #if(isRequired) { required } #if(accept) { accept='#(accept)' } #if(multiple) { multiple='#(multiple)' }")
+    #bs:formFile("#if(hasErrors) { is-invalid }", "id='#(key)' name='#(key)' #if(value) { value='#(value)' } #if(isRequired) { required } #if(accept) { accept='#(accept)' } #if(multiple) { multiple='#(multiple)' }")
 
     #if(helpText) {
         <small id="#(key)Help" class="form-text text-muted">#(helpText)</small>
