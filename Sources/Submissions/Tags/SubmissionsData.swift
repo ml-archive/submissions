@@ -5,11 +5,11 @@ public extension TagContext {
     /// Encapsulates relevant submissions data that can be used for validation output.
     /// For example when rendering the form.
     public struct SubmissionsData: Encodable {
-        let key: String
-        let value: String?
-        let label: String?
-        let isRequired: Bool
-        let errors: Future<[String]>?
+        public let key: String
+        public let value: String?
+        public let label: String?
+        public let isRequired: Bool
+        public let errors: Future<[String]>?
     }
 
     /// Pulls out any relevant submissions data for the given field using the `FieldCache`.
