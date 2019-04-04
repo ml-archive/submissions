@@ -3,7 +3,7 @@
         <label for="#(key)">#(label)</label>
     }
     
-    #bs:input("#(type)", "form-control #if(hasErrors) { is-invalid }", "id='#(key)' name='#(key)' #if(value) { value='#(value)' } #if(isRequired) { required } #if(placeholder) { placeholder='#(placeholder)' }")
+    #bs:input("#(type)", "#if(hasErrors) { is-invalid }", "id='#(key)' name='#(key)' #if(value) { value='#(value)' } #if(isRequired) { required } #if(placeholder) { placeholder='#(placeholder)' }")
 
     #if(helpText) {
         <small id="#(key)Help" class="form-text text-muted">#(helpText)</small>
