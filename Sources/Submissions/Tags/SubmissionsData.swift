@@ -23,8 +23,11 @@ public extension TagContext {
             throw error(reason: "Invalid parameter type.")
         }
 
-        let field = fieldCache[valueFor: key]
-        let errors = fieldCache[errorsFor: key]
+        // Vapor's `URLEncodedFormDecoder` requires array-valued arguments to be encoded with a trailing `[]` in the
+        // form data. However, key paths can't contain `[]`, so we strip that part when searching for a tag's field.
+        let keyPath = key.components(separatedBy: "[]")[0]
+        let field = fieldCache[valueFor: keyPath]
+        let errors = fieldCache[errorsFor: keyPath]
 
         return SubmissionsData(
             key: key,
