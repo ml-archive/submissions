@@ -5,19 +5,19 @@ import Vapor
 public struct Field {
 
     /// The key that references this field.
-    let key: String
+    public let key: String
 
     /// The value for this field represented as a `String`.
-    let value: String?
+    public let value: String?
 
     /// A label describing this field. Used by Tags to render alongside an input field.
-    let label: String?
+    public let label: String?
 
     /// Whether or not values are allowed to be absent.
-    let isRequired: Bool
+    public let isRequired: Bool
 
     /// Performs the validations.
-    let validate: Validate
+    public let validate: Validate
 
     /// Can validate asyncronously.
     public typealias Validate = (Request, ValidationContext) throws -> Future<[ValidationError]>
