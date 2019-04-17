@@ -37,7 +37,8 @@ extension Submittable {
         for submission: Submission? = nil,
         given existing: Self? = nil
     ) throws -> [Field] {
-        return try Submission.makeFields(for: submission ?? existing?.makeSubmission()) +
+        let submission = submission ?? existing?.makeSubmission()
+        return try Submission.makeFields(for: submission) +
             makeAdditionalFields(for: submission, given: existing)
     }
 }
