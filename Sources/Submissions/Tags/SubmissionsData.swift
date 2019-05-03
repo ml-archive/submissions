@@ -4,7 +4,7 @@ public extension TagContext {
 
     /// Encapsulates relevant submissions data that can be used for validation output.
     /// For example when rendering the form.
-    public struct SubmissionsData: Encodable {
+    struct SubmissionsData: Encodable {
         public let key: String
         public let value: String?
         public let label: String?
@@ -16,7 +16,7 @@ public extension TagContext {
     ///
     /// - Returns: The submission data related to the given field.
     /// - Throws: When the name of the field is missing.
-    public func submissionsData() throws -> SubmissionsData {
+    func submissionsData() throws -> SubmissionsData {
         let fieldCache = try requireRequest().fieldCache()
 
         guard let key = parameters[safe: 0]?.string else {
