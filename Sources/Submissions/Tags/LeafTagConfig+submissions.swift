@@ -11,11 +11,12 @@ extension LeafTagConfig {
         use([
             "submissions:checkbox": InputTag(templatePath: paths.checkboxField),
             "submissions:email": InputTag(templatePath: paths.emailField),
-            "submissions:file": InputTag(templatePath: paths.fileField),
+            "submissions:file": FileTag(templatePath: paths.fileField),
             "submissions:hidden": InputTag(templatePath: paths.hiddenField),
             "submissions:password": InputTag(templatePath: paths.passwordField),
             "submissions:text": InputTag(templatePath: paths.textField),
-            "submissions:textarea": InputTag(templatePath: paths.textareaField)
+            "submissions:textarea": InputTag(templatePath: paths.textareaField),
+            "submissions:select": SelectTag(templatePath: paths.selectField)
         ])
     }
 }
