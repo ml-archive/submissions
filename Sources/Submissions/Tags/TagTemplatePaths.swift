@@ -22,6 +22,9 @@ public struct TagTemplatePaths {
     /// Path to template for textarea element
     public let textareaField: String
 
+    /// Path to template for select input element
+    public let selectField: String
+
     /// Create a new TagTemplatePaths configuration value.
     ///
     /// - Parameters:
@@ -39,7 +42,8 @@ public struct TagTemplatePaths {
         hiddenField: String = "Submissions/Fields/hidden-input",
         passwordField: String = "Submissions/Fields/password-input",
         textField: String = "Submissions/Fields/text-input",
-        textareaField: String = "Submissions/Fields/textarea-input"
+        textareaField: String = "Submissions/Fields/textarea-input",
+        selectField: String = "Submissions/Fields/select-input"
     ) {
         self.checkboxField = checkboxField
         self.emailField = emailField
@@ -48,5 +52,6 @@ public struct TagTemplatePaths {
         self.passwordField = passwordField
         self.textField = textField
         self.textareaField = textareaField
+        self.selectField = selectField
     }
 }
