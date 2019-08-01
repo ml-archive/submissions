@@ -1,0 +1,68 @@
+{
+  "warnings": [
+    {
+      "file": "/Users/emilmarashliev/Projects/submissions/Sources/Submissions/Submittable.swift",
+      "line": 6,
+      "symbol": "Submittable.SubmissionType",
+      "symbol_kind": "source.lang.swift.decl.typealias",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/emilmarashliev/Projects/submissions/Sources/Submissions/Submittable.swift",
+      "line": 24,
+      "symbol": "Submittable.makeSubmission()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/emilmarashliev/Projects/submissions/Sources/Submissions/Submittable.swift",
+      "line": 56,
+      "symbol": "Submittable.makeSubmission()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/emilmarashliev/Projects/submissions/Sources/Submissions/Tags/SelectTag.swift",
+      "line": 8,
+      "symbol": "SelectTag.Option",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/emilmarashliev/Projects/submissions/Sources/Submissions/Tags/SubmissionsData.swift",
+      "line": 8,
+      "symbol": "TagContext.SubmissionsData.key",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/emilmarashliev/Projects/submissions/Sources/Submissions/Tags/SubmissionsData.swift",
+      "line": 9,
+      "symbol": "TagContext.SubmissionsData.value",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/emilmarashliev/Projects/submissions/Sources/Submissions/Tags/SubmissionsData.swift",
+      "line": 10,
+      "symbol": "TagContext.SubmissionsData.label",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/emilmarashliev/Projects/submissions/Sources/Submissions/Tags/SubmissionsData.swift",
+      "line": 11,
+      "symbol": "TagContext.SubmissionsData.isRequired",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/emilmarashliev/Projects/submissions/Sources/Submissions/Tags/SubmissionsData.swift",
+      "line": 12,
+      "symbol": "TagContext.SubmissionsData.errors",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    }
+  ],
+  "source_directory": "/Users/emilmarashliev/Projects/submissions"
+}

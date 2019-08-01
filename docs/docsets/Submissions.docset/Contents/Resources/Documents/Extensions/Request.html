@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Request Extension Reference</title>
+    <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
+    <meta charset='utf-8'>
+    <script src="../js/jquery.min.js" defer></script>
+    <script src="../js/jazzy.js" defer></script>
+    
+  </head>
+  <body>
+    <a name="//apple_ref/swift/Extension/Request" class="dashAnchor"></a>
+    <a title="Request Extension Reference"></a>
+    <header>
+      <div class="content-wrapper">
+        <p><a href="../index.html">Submissions Docs</a> (91% documented)</p>
+      </div>
+    </header>
+    <div class="content-wrapper">
+      <p id="breadcrumbs">
+        <a href="../index.html">Submissions Reference</a>
+        <img id="carat" src="../img/carat.png" />
+        Request Extension Reference
+      </p>
+    </div>
+    <div class="content-wrapper">
+      <nav class="sidebar">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a href="../Classes.html">Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Classes/FieldCache.html">FieldCache</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/FileTag.html">FileTag</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/InputTag.html">InputTag</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/SelectTag.html">SelectTag</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/SelectTag/Option.html">– Option</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/SubmissionsMiddleware.html">SubmissionsMiddleware</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/SubmissionsProvider.html">SubmissionsProvider</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Enums.html">Enumerations</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Enums/AbsentValueStrategy.html">AbsentValueStrategy</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/ValidationContext.html">ValidationContext</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Extensions.html">Extensions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Extensions/Future.html">Future</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/LeafTagConfig.html">LeafTagConfig</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/Loginable.html">Loginable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/Request.html">Request</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/TagContext.html">TagContext</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/TagContext/SubmissionsData.html">– SubmissionsData</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Protocols.html">Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Protocols/FieldsRepresentable.html">FieldsRepresentable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/Submittable.html">Submittable</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Structs.html">Structures</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Structs/Field.html">Field</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/RequiredStrategy.html">RequiredStrategy</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/SubmissionValidationError.html">SubmissionValidationError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/TagTemplatePaths.html">TagTemplatePaths</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+        <section>
+          <section class="section">
+            <h1>Request</h1>
+              <div class="declaration">
+                <div class="language">
+                  <pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">Request</span></code></pre>
+
+                </div>
+              </div>
+            
+          </section>
+          <section class="section task-group-section">
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:5Vapor7RequestC11SubmissionsE10fieldCacheAD05FieldE0CyKF"></a>
+                    <a name="//apple_ref/swift/Method/fieldCache()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:5Vapor7RequestC11SubmissionsE10fieldCacheAD05FieldE0CyKF">fieldCache()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Creates or retrieves a field cache object.</p>
+<div class="aside aside-throws">
+    <p class="aside-title">Throws</p>
+    When no <code><a href="../Classes/FieldCache.html">FieldCache</a></code> has been registered with this container.
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">fieldCache</span><span class="p">()</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Classes/FieldCache.html">FieldCache</a></span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>The <code><a href="../Classes/FieldCache.html">FieldCache</a></code>.</p>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:5Vapor7RequestC11SubmissionsE9addFields3for5given0F4TypeAD10FieldCacheC10SubmissionQzSg_xSgxmtKAD11SubmittableRzlF"></a>
+                    <a name="//apple_ref/swift/Method/addFields(for:given:forType:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:5Vapor7RequestC11SubmissionsE9addFields3for5given0F4TypeAD10FieldCacheC10SubmissionQzSg_xSgxmtKAD11SubmittableRzlF">addFields(for:given:forType:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Add fields to the field cache.</p>
+<div class="aside aside-throws">
+    <p class="aside-title">Throws</p>
+    When no <code><a href="../Classes/FieldCache.html">FieldCache</a></code> has been registered with this container.
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">@discardableResult</span>
+<span class="kd">public</span> <span class="kd">func</span> <span class="n">addFields</span><span class="o">&lt;</span><span class="kt">S</span><span class="p">:</span> <span class="kt"><a href="../Protocols/Submittable.html">Submittable</a></span><span class="o">&gt;</span><span class="p">(</span>
+    <span class="k">for</span> <span class="nv">submission</span><span class="p">:</span> <span class="kt">S</span><span class="o">.</span><span class="kt">Submission</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">,</span>
+    <span class="n">given</span> <span class="nv">submittable</span><span class="p">:</span> <span class="kt">S</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">,</span>
+    <span class="n">forType</span> <span class="nv">type</span><span class="p">:</span> <span class="kt">S</span><span class="o">.</span><span class="k">Type</span> <span class="o">=</span> <span class="kt">S</span><span class="o">.</span><span class="k">self</span>
+<span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Classes/FieldCache.html">FieldCache</a></span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>submission</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The submission containing the values for the fields, or nil.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>submittable</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>An existing submittable value used during validation, or nil.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>type</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The type of the Submittable. Only needed when <code>submission</code> == nil.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>The <code><a href="../Classes/FieldCache.html">FieldCache</a></code>.</p>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:5Vapor7RequestC11SubmissionsE9addFields3for0F4TypeAD10FieldCacheCxSg_xmtKAD0E13RepresentableRzlF"></a>
+                    <a name="//apple_ref/swift/Method/addFields(for:forType:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:5Vapor7RequestC11SubmissionsE9addFields3for0F4TypeAD10FieldCacheCxSg_xmtKAD0E13RepresentableRzlF">addFields(for:forType:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Add fields to the field cache.</p>
+<div class="aside aside-throws">
+    <p class="aside-title">Throws</p>
+    When no <code><a href="../Classes/FieldCache.html">FieldCache</a></code> has been registered with this container.
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">@discardableResult</span>
+<span class="kd">public</span> <span class="kd">func</span> <span class="n">addFields</span><span class="o">&lt;</span><span class="kt">F</span><span class="p">:</span> <span class="kt"><a href="../Protocols/FieldsRepresentable.html">FieldsRepresentable</a></span><span class="o">&gt;</span><span class="p">(</span>
+    <span class="k">for</span> <span class="nv">instance</span><span class="p">:</span> <span class="kt">F</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">,</span>
+    <span class="n">forType</span> <span class="nv">type</span><span class="p">:</span> <span class="kt">F</span><span class="o">.</span><span class="k">Type</span> <span class="o">=</span> <span class="kt">F</span><span class="o">.</span><span class="k">self</span>
+<span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Classes/FieldCache.html">FieldCache</a></span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>instance</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The source of the values for the fields, or nil.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>type</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The concrete type of the <code><a href="../Protocols/FieldsRepresentable.html">FieldsRepresentable</a></code>.
+Only needed when <code>submission</code> == nil.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>The <code><a href="../Classes/FieldCache.html">FieldCache</a></code>.</p>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </section>
+        </section>
+        <section id="footer">
+          <p>&copy; 2019 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2019-08-01)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.10.0</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+        </section>
+      </article>
+    </div>
+  </body>
+</div>
+</html>
