@@ -62,13 +62,14 @@ public final class SelectTag: TagRenderer {
 
         let placeholder = tag.parameters[safe: 2]?.string
         let helpText = tag.parameters[safe: 3]?.string
+        let label = tag.parameters[safe: 4]?.string
 
         return (data.errors ?? tag.future([])).flatMap {
             let inputData = InputData(
                 key: data.key,
                 value: data.value,
                 options: options,
-                label: data.label,
+                label: label ?? data.label,
                 isRequired: data.isRequired,
                 errors: $0,
                 hasErrors: !$0.isEmpty,
