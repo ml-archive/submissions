@@ -7,9 +7,9 @@ extension Submittable where Self: Creatable {
     public static func preCreate(on req: Request) -> Future<Void> {
         return .flatMap(on: req) {
             try req.content.decode(Submission.self)
-                .flatMap { (submission: Submission) in
+                .flatMap {
                     try req
-                        .addFields(for: submission, forType: Self.self)
+                        .addFields(for: $0, forType: Self.self)
                         .validate(inContext: .create, on: req)
                         .assertValid(on: req)
                 }
@@ -23,9 +23,9 @@ extension Submittable where Self: Updatable, Self.Update == Self.Submission {
     public func preUpdate(on req: Request) -> Future<Void> {
         return .flatMap(on: req) {
             try req.content.decode(Submission.self)
-                .flatMap { (submission: Submission) in
+                .flatMap {
                     try req
-                        .addFields(for: submission, given: self)
+                        .addFields(for: $0, given: self)
                         .validate(inContext: .update, on: req)
                         .assertValid(on: req)
                 }
@@ -39,12 +39,12 @@ extension Loginable where Self.Login: Submittable {
     public static func preLogin(on req: Request) -> Future<Void> {
         return .flatMap(on: req) {
             try req.content.decode(Login.Submission.self)
-                .flatMap { (submission: Login.Submission) in
+                .flatMap {
                     try req
-                        .addFields(for: submission, forType: Login.self)
+                        .addFields(for: $0, forType: Login.self)
                         .validate(inContext: .create, on: req)
                         .assertValid(on: req)
-            }
+                }
         }
     }
 }
