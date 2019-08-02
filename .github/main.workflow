@@ -1,12 +1,12 @@
 workflow "Auto docs" {
-  on = "release"
   resolves = ["Jazzy docs"]
+  on = "release"
 }
 
 action "Jazzy docs" {
-  uses = "nodes-vapor/github-actions/actions/jazzy-docs@master"
+  uses = "nodes-vapor/github-actions/actions/jazzy-docs@develop"
   secrets = [
-    "GITHUB_TOKEN"
+    "GITHUB_TOKEN",
   ]
   env = {
     TARGET = "Submissions"
