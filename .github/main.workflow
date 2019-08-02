@@ -6,9 +6,7 @@ workflow "Auto docs" {
 action "Jazzy docs" {
   uses = "nodes-vapor/github-actions/actions/jazzy-docs@master"
   secrets = [
-    "GITHUB_TOKEN",
-    "GH_USER",
-    "GH_EMAIL",
+    "GITHUB_TOKEN"
   ]
   env = {
     TARGET = "Submissions"
