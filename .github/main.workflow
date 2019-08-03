@@ -4,7 +4,7 @@ workflow "Auto docs" {
 }
 
 action "Jazzy docs" {
-  uses = "nodes-vapor/github-actions/actions/jazzy-docs@develop"
+  uses = "nodes-vapor/github-actions/actions/jazzy-docs@fix-jazzy-docs"
   secrets = [
     "GITHUB_TOKEN",
   ]
