@@ -58,17 +58,113 @@ try services.register(SubmissionsProvider())
 
 This makes sure that fields and errors can be stored on the request using a `FieldCache` service.
 
-## Defining your submitted data
+## Validating API requests
 
-### Validating API requests
+_TODO_
 
 ## Validating HTML form requests
 
-### Leaf tags
+Submissions comes with leaf tags that can render fields into HTML. The leaf files needs to be copied from the folder `Resources/Views/Submissions` from `Submissions` to your project's `Resources/Views`. Then we can register Submissions' leaf tags where you register your other leaf tags, for instance:
 
-### Rendering the forms
+```swift
+var leafTagConfig = LeafTagConfig.default()
+...
+leafTagConfig.useSubmissionsLeafTags()
+services.register(leafTagConfig)
+```
 
-### Validating and storing the data
+You can customize where Submissions looks for the leaf tags by passing in a modified instance of `TagTemplatePaths` to `useSubmissionsLeafTags(paths:)`.
+
+In order to render a view that contains Submissions leaf tags we need to ensure that the `Field`s are added to the field cache and that the `Request` is passed into the `render` call:
+
+```swift
+let nameField = Field(key: "name", value: "", label: "Name")
+try req.fieldCache().addFields([nameField])
+try req.view().render("index", on: req)
+```
+
+In your leaf file you can then refer to this field using an appropriate tag and the key "name" as defined when creating the Field.
+
+### Tags
+
+#### Input tags
+
+The following input tags are available for your leaf files.
+
+```
+#submissions:checkbox( ... )
+#submissions:email( ... )
+#submissions:hidden( ... )
+#submissions:password( ... )
+#submissions:text( ... )
+#submissions:textarea( ... )
+```
+
+They all accept the same number of parameters.
+
+With these options:
+
+Position | Type | Description | Example | Required?
+-|-|-|-|-
+1 | key | Key to the related field in the field cache | _"name"_ | yes
+2 | placeholder | Placeholder text | _"Enter name"_ | no
+3 | help text | Help text | _"This name will be visible to others"_ | no
+
+#### File tag
+
+To add a file upload to your form use this leaf tag.
+
+```
+#submissions:file( ... )
+```
+
+With these options:
+
+Position | Type | Description | Example | Required?
+-|-|-|-|-
+1 | key | Key to the related field in the field cache | _"avatar"_ | yes
+2 | help text | Help text | _"This will replace your existing avatar"_ | no
+3 | accept | Placeholder text | _"image/*"_ | no
+4 | multiple | Support multple file uploads | _"true"_ (or any other non-nil value) | no
+
+
+#### Select tag
+
+A select tag can be added as follows.
+
+```
+#submissions:select( ... )
+```
+
+With these options:
+
+Position | Type | Description | Example | Required?
+-|-|-|-|-
+1 | key | Key to the related field in the field cache | _"role"_ | yes
+2 | options | The possible options in the drop down | _roles_ | no
+3 | placeholder | Placeholder text | _"Select an role"_ | no
+4 | help text | Help text | _"The role defines the actions a user is allowed to perform"_ | no
+
+The second option (e.g. `roles`) is a special parameter that defines the dropdown options. It has to be passed into the render call something like this.
+
+```swift
+enum Role: String, CaseIterable, Codable {
+    case user, admin, superAdmin
+}
+
+extension Role: OptionRepresentable {
+    var optionID: String? {
+        return self.rawValue
+    }
+
+    var optionValue: String? {
+        return self.rawValue.uppercased()
+    }
+}
+
+let roles: [Role] = .
+try req.view().render("index", ["roles": roles.allCases.makeOptions()] on: req)
+```
 
 ## 🏆 Credits
 
