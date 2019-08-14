@@ -57,7 +57,7 @@ public final class SelectTag: TagRenderer {
             else {
                 return nil
             }
-            return SelectTag.Option(id: id, value: value)
+            return Option(id: id, value: value)
         }
 
         let placeholder = tag.parameters[safe: 2]?.string
