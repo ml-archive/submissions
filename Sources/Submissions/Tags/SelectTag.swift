@@ -57,7 +57,7 @@ public final class SelectTag: TagRenderer {
             else {
                 return nil
             }
-            return SelectTag.Option(id: id, value: value)
+            return Option(id: id, value: value)
         }
 
         let placeholder = tag.parameters[safe: 2]?.string
@@ -82,27 +82,37 @@ public final class SelectTag: TagRenderer {
 
 // MARK: Convenience helpers
 
-/// A type that can be used as an option for the SelectTag.
-protocol Selectable {
-    func optionID() throws -> String?
-    func optionValue() throws -> String?
+/// A type that can be used as an option for the SelectTag for rendering in an HTML `select`
+/// element.
+public protocol OptionRepresentable {
+
+    /// The identifier for the option.
+    var optionID: String? { get }
+
+    /// The value for the option
+    var optionValue: String? { get }
 }
 
-extension Array where Element: Selectable {
-    /// Generates the options for the SelectTag.
-    var options: [SelectTag.Option] {
-        return self.compactMap { option in
-            guard
-                let id = try? option.optionID(),
-                let unwrappedId = id,
-                let value = try? option.optionValue(),
-                let unwrappedValue = value
-            else { return nil }
+public extension OptionRepresentable {
 
-            return SelectTag.Option(
-                id: unwrappedId,
-                value: unwrappedValue
-            )
-        }
+    /// Makes an `Option` based on the `optionID` and the `optionValue`. If the latter is `nil`,
+    /// `optionID` is used as a fallback.
+    ///
+    /// - Returns: An `Option` for use in `SelectTag` or `nil` `optionID` is `nil.`
+    func makeOption() -> SelectTag.Option? {
+        guard let id = optionID else { return nil }
+
+        return .init(
+            id: id,
+            value: optionValue ?? id
+        )
+    }
+}
+
+public extension Sequence where Element: OptionRepresentable {
+
+    /// Yields the `Option` elements for the `Selectable` elements in the sequence.
+    func makeOptions() -> [SelectTag.Option] {
+        return compactMap { $0.makeOption() }
     }
 }
