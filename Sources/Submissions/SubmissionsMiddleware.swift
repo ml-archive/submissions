@@ -5,8 +5,13 @@ import Vapor
 /// Note: needs to come after `ErrorMiddleware` (if present) to avoid the
 /// `SubmissionValidationError`s from being transformed into Internal Server errors on the way back
 /// up the responder chain.
-public final class SubmissionsMiddleware: Middleware {
+public final class SubmissionsMiddleware: Middleware, ServiceType {
 
+	/// See `ServiceType`.
+	public static func makeService(for container: Container) throws -> SubmissionsMiddleware {
+		return SubmissionsMiddleware()
+	}
+	
     /// Create a new `SubmissionsMiddleware`.
     public init() {}
 
