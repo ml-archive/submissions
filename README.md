@@ -48,7 +48,7 @@ First make sure that you've imported Submissions everywhere it's needed:
 import Submissions
 ```
 
-### Adding the Provider
+### Adding the Provider and Middleware
 
 "Submissions" comes with a light-weight provider that we'll need to register in the `configure` function in our `configure.swift` file:
 
@@ -56,7 +56,14 @@ import Submissions
 try services.register(SubmissionsProvider())
 ```
 
+It also include a middleware you have to register in your `MiddlewareConfig` :
+
+```swift
+config.use(SubmissionsMiddleware.self)
+```
+
 This makes sure that fields and errors can be stored on the request using a `FieldCache` service.
+
 
 ## Validating API requests
 
