@@ -7,7 +7,7 @@ import Vapor
 /// up the responder chain.
 public final class SubmissionsMiddleware: Middleware, ServiceType {
 
-	/// See `ServiceType`.
+    /// See `ServiceType`.
 	public static func makeService(for container: Container) throws -> SubmissionsMiddleware {
 		return SubmissionsMiddleware()
 	}
