@@ -56,11 +56,12 @@ import Submissions
 try services.register(SubmissionsProvider())
 ```
 
-It also include a middleware you have to register in your `MiddlewareConfig` :
+It also includes a middleware you have to register in your `MiddlewareConfig`  (needs to come after `ErrorMiddleware` if present, to avoid the `SubmissionValidationError`s from being transformed into Internal Server errors on the way back up the responder chain)
 
 ```swift
 config.use(SubmissionsMiddleware.self)
 ```
+
 
 This makes sure that fields and errors can be stored on the request using a `FieldCache` service.
 
