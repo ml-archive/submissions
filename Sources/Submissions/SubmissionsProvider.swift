@@ -8,6 +8,7 @@ public final class SubmissionsProvider: Provider {
 
     /// See `Provider`
     public func register(_ services: inout Services) throws {
+		services.register(SubmissionsMiddleware.self)
         services.register { _ in FieldCache() }
     }
 
