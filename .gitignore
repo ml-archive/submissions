@@ -1,7 +1,8 @@
 Packages
 .build
-xcuserdata
+.idea
+.DS_Store
 *.xcodeproj
 DerivedData/
-.DS_Store
 Package.resolved
+.swiftpm
