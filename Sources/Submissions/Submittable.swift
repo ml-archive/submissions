@@ -9,7 +9,7 @@ public protocol Submittable {
     associatedtype Submission: SubmissionType
 
     /// Make fields for validation in addition to the ones from the `Submission` given an existing
-    /// `Stubmittable` entity. This can be used when the validation depends on an existing entity.
+    /// `Submittable` entity. This can be used when the validation depends on an existing entity.
     /// For example to add a filter to a database query ensuring uniqueness of a property.
     ///
     /// - Parameters:
