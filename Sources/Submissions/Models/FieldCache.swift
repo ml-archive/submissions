@@ -40,9 +40,6 @@ extension FieldCache {
         }
         .flatten(on: worker)
         .map(Dictionary.init(uniqueKeysWithValues:)) // safe to use because we know keys will be unique
-        .map { dict in
-            return dict
-        }
     }
 }
 
