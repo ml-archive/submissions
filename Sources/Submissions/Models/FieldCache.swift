@@ -32,6 +32,15 @@ extension FieldCache {
             fields[key] = newValue
         }
     }
+
+    /// Returns the errors for all fields.
+    public func getAllErrors(on worker: Worker) -> EventLoopFuture<[String: [String]]> {
+        return errors.map { key, errorsFuture in
+            errorsFuture.map { errors in (key, errors) }
+        }
+        .flatten(on: worker)
+        .map(Dictionary.init(uniqueKeysWithValues:)) // safe to use because we know keys will be unique
+    }
 }
 
 extension Request {
