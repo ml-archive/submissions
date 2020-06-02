@@ -1,8 +1,1 @@
-import XCTest
-
-import SubmissionsTests
-
-var tests = [XCTestCaseEntry]()
-tests += SubmissionsTests.__allTests()
-
-XCTMain(tests)
+fatalError("Please use swift test --enable-test-discovery to run the tests instead")
