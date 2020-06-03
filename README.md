@@ -25,7 +25,10 @@ targets: [
     ...
     .target(
         name: "App",
-        dependencies: [... "Submissions" ...]
+        dependencies: [
+            ...
+            .product(name: "Submissions", package: "submissions")
+        ]
     ),
     ...
 ]
