@@ -1,8 +1,7 @@
 # Submissions 📩
-[![Swift Version](https://img.shields.io/badge/Swift-4.2-brightgreen.svg)](http://swift.org)
-[![Vapor Version](https://img.shields.io/badge/Vapor-3.1-30B6FC.svg)](http://vapor.codes)
-[![CircleCI](https://circleci.com/gh/nodes-vapor/submissions/tree/master.svg?style=svg)](https://circleci.com/gh/nodes-vapor/submissions/tree/master)
-[![codebeat badge](https://codebeat.co/badges/b9c894d6-8c6a-4a07-bfd5-29db898c8dfe)](https://codebeat.co/projects/github-com-nodes-vapor-submissions-master)
+[![Swift Version](https://img.shields.io/badge/Swift-5.2-brightgreen.svg)](http://swift.org)
+[![Vapor Version](https://img.shields.io/badge/Vapor-4.0-30B6FC.svg)](http://vapor.codes)
+[![![codebeat badge](https://codebeat.co/badges/b9c894d6-8c6a-4a07-bfd5-29db898c8dfe)](https://codebeat.co/projects/github-com-nodes-vapor-submissions-master)
 [![codecov](https://codecov.io/gh/nodes-vapor/submissions/branch/master/graph/badge.svg)](https://codecov.io/gh/nodes-vapor/submissions)
 [![Readme Score](http://readme-score-api.herokuapp.com/score.svg?url=https://github.com/nodes-vapor/submissions)](http://clayallsopp.github.io/readme-score?url=https://github.com/nodes-vapor/submissions)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/nodes-vapor/reset/master/LICENSE)
@@ -15,7 +14,7 @@ Add `Submissions` to the Package dependencies:
 ```swift
 dependencies: [
     ...,
-    .package(url: "https://github.com/nodes-vapor/submissions.git", from: "2.0.0")
+    .package(url: "https://github.com/nodes-vapor/submissions.git", from: "3.0.0")
 ]
 ```
 
