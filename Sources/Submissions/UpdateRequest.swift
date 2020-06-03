@@ -21,7 +21,7 @@ public extension UpdateRequest {
 }
 
 public extension UpdateRequest where Model: Authenticatable {
-    static func update(on request: Request) -> EventLoopFuture<Model> {
+    static func updateAuthenticatable(on request: Request) -> EventLoopFuture<Model> {
         do {
             return update(try request.auth.require(), on: request)
         } catch {
