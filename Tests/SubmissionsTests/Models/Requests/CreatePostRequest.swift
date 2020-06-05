@@ -2,16 +2,10 @@ import Vapor
 import Submissions
 
 struct CreatePostRequest: Content, CreateRequest {
-    typealias Model = Post
+    let title: String
 
     func create(on request: Request) -> EventLoopFuture<Post> {
-        do {
-            let post = try request.content.decode(Post.self)
-            // add code here that creates a new post into the database
-            return request.eventLoop.future(post)
-        } catch(let error) {
-            return request.eventLoop.makeFailedFuture(error)
-        }
+        request.eventLoop.future(Post(title: title)) 
     }
 
     static func validations(on request: Request) -> EventLoopFuture<Validations> {

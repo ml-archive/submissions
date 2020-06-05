@@ -1,6 +1,5 @@
 import XCTVapor
 
-
 final class SubmissionsTests: XCTestCase {
     var app: Application!
 
@@ -14,7 +13,7 @@ final class SubmissionsTests: XCTestCase {
         app = nil
     }
 
-    func test_crate() throws {
+    func test_create() throws {
         try app.test(.POST, "posts", beforeRequest: { request in
             try request.content.encode(["title": "Some title"], as: .json)
         }) { response in
@@ -26,11 +25,12 @@ final class SubmissionsTests: XCTestCase {
         }
     }
 
-    func test_crate_includesValidation() throws {
+    func test_create_includesValidation() throws {
         try app.test(.POST, "posts?fail", beforeRequest: { request in
             try request.content.encode(["title": "Some title"], as: .json)
         }) { response in
             XCTAssertEqual(response.status, .badRequest)
+    
             let errorReason: String = try response.content.get(at: "reason")
             XCTAssertEqual(errorReason, "validation has failed")
         }
@@ -47,5 +47,15 @@ final class SubmissionsTests: XCTestCase {
             XCTAssertEqual(post.title, "Updated title")
         }
     }
-    
+
+    func test_update_includesValidations() throws {
+        try app.test(.PUT, "posts?fail", beforeRequest: { request in
+            try request.content.encode(["title": "Updated title"], as: .json)
+        }) { response in
+            XCTAssertEqual(response.status, .badRequest)
+
+            let errorReason: String = try response.content.get(at: "reason")
+            XCTAssertEqual(errorReason, "validation has failed")
+        }
+    }
 }
