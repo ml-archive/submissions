@@ -16,7 +16,15 @@ extension UpdateRequest {
 
 public extension UpdateRequest {
     static func update(_ model: Model, on request: Request) -> EventLoopFuture<Model> {
-        validated(on: request).flatMap { $0.update(model, on: request) }
+        validated(for: model, on: request).flatMap { $0.update(model, on: request) }
+    }
+
+    static func validated(for model: Model, on request: Request) -> EventLoopFuture<Self> {
+        validations(for: model, on: request).flatMapThrowing { validations in
+            try validations.validate(request).assert()
+        }.flatMap {
+            make(from: request)
+        }
     }
 }
 
