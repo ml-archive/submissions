@@ -6,10 +6,6 @@ public protocol RequestMakeable {
 
 public extension RequestMakeable where Self: Decodable {
     static func make(from request: Request) -> EventLoopFuture<Self> {
-        do {
-            return request.eventLoop.future(try request.content.decode(Self.self))
-        } catch {
-            return request.eventLoop.future(error: error)
-        }
+        request.eventLoop.future(result: .init { try request.content.decode(Self.self) })
     }
 }

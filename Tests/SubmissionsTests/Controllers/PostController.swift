@@ -7,10 +7,7 @@ struct PostController {
     }
 
     func update(request: Request) -> EventLoopFuture<Post> {
-        //find the post
-        let post = Post(title: "")
-        //and update it
-        return UpdatePostRequest.update(post, on: request)
+        UpdatePostRequest.update(on: request)
     }
 }
 

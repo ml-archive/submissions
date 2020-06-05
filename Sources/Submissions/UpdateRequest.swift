@@ -1,39 +1,39 @@
 import Vapor
 
-public protocol UpdateRequest: ValidatableRequest {
+public protocol UpdateRequest: RequestMakeable {
     associatedtype Model
 
-    func update(_ model: Model, on request: Request) -> EventLoopFuture<Model>
-
+    static func find(on request: Request) -> EventLoopFuture<Model>
     static func validations(for model: Model, on request: Request) -> EventLoopFuture<Validations>
+
+    func update(_ model: Model, on request: Request) -> EventLoopFuture<Model>
 }
 
-extension UpdateRequest {
-    static func validations(for model: Model, on request: Request) -> EventLoopFuture<Validations> {
-        validations(on: request)
+public extension UpdateRequest {
+    static func validations(
+        for _: Model,
+        on request: Request
+    ) -> EventLoopFuture<Validations> {
+        request.eventLoop.future(Validations())
     }
 }
 
 public extension UpdateRequest {
-    static func update(_ model: Model, on request: Request) -> EventLoopFuture<Model> {
-        validated(for: model, on: request).flatMap { $0.update(model, on: request) }
-    }
-
-    static func validated(for model: Model, on request: Request) -> EventLoopFuture<Self> {
-        validations(for: model, on: request).flatMapThrowing { validations in
-            try validations.validate(request).assert()
-        }.flatMap {
-            make(from: request)
+    static func update(on request: Request) -> EventLoopFuture<Model> {
+        find(on: request).flatMap { model in
+            validations(for: model, on: request).flatMapThrowing { validations in
+                try validations.validate(request).assert()
+            }.flatMap {
+                make(from: request)
+            }.flatMap {
+                $0.update(model, on: request)
+            }
         }
     }
 }
 
 public extension UpdateRequest where Model: Authenticatable {
-    static func updateAuthenticatable(on request: Request) -> EventLoopFuture<Model> {
-        do {
-            return update(try request.auth.require(), on: request)
-        } catch {
-            return request.eventLoop.makeFailedFuture(error)
-        }
+    static func find(on request: Request) -> EventLoopFuture<Model> {
+        request.eventLoop.future(result: .init { try request.auth.require() })
     }
 }
