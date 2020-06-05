@@ -33,11 +33,7 @@ public extension UpdateRequest {
 }
 
 public extension UpdateRequest where Model: Authenticatable {
-    static func create(on request: Request) -> EventLoopFuture<Model> {
-        do {
-            return request.eventLoop.future(try request.auth.require())
-        } catch {
-            return request.eventLoop.makeFailedFuture(error)
-        }
+    static func find(on request: Request) -> EventLoopFuture<Model> {
+        request.eventLoop.future(result: .init { try request.auth.require() })
     }
 }
