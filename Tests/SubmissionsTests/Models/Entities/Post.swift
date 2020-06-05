@@ -1,6 +1,9 @@
 import Vapor
 
-struct Post: Content {
-    let id = UUID()
-    let title: String
+final class Post: Content {
+    var title: String
+    
+    init(title: String) {
+        self.title = title
+    }
 }
