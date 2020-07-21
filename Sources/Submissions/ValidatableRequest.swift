@@ -19,7 +19,7 @@ public extension ValidatableRequest where Self: Validatable {
 public extension ValidatableRequest {
     static func validated(on request: Request) -> EventLoopFuture<Self> {
         validations(on: request).flatMapThrowing { validations in
-            try validations.validate(request).assert()
+            try validations.validate(request: request).assert()
         }.flatMap {
             make(from: request)
         }

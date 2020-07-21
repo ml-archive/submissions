@@ -22,7 +22,7 @@ public extension UpdateRequest {
     static func update(on request: Request) -> EventLoopFuture<Model> {
         find(on: request).flatMap { model in
             validations(for: model, on: request).flatMapThrowing { validations in
-                try validations.validate(request).assert()
+                try validations.validate(request: request).assert()
             }.flatMap {
                 make(from: request)
             }.flatMap {
