@@ -14,7 +14,7 @@ jobs:
       - name: Generate Documentation
         uses: SwiftDocOrg/swift-doc@master
         with:
-          inputs: "Sources/Submissions"
+          inputs: "Sources"
           module-name: Submissions
           output: "Documentation"
       - name: Upload Documentation to Wiki
