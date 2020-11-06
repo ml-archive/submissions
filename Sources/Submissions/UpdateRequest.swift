@@ -37,3 +37,9 @@ public extension UpdateRequest where Model: Authenticatable {
         request.eventLoop.future(result: .init { try request.auth.require() })
     }
 }
+
+public extension UpdateRequest where Self: Validatable {
+    static func validations(for _: Model, on request: Request) -> EventLoopFuture<Validations> {
+        request.eventLoop.future(validations())
+    }
+}
